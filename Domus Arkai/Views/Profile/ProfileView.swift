@@ -9,6 +9,7 @@ import SwiftUI
 import AuthenticationServices
 import Auth
 import Helpers
+import RoomPlan
 
 struct ProfileView: View {
     @AppStorage("pref_notifications_visits") private var notifyVisits: Bool = true
@@ -24,6 +25,7 @@ struct ProfileView: View {
     @State private var showAbout: Bool = false
     @State private var showPassportEdit: Bool = false
     @State private var showMyDossiers: Bool = false
+    @State private var showRoomScanPOC: Bool = false
     @State private var authErrorMessage: String?
     @State private var showDeleteConfirm1: Bool = false
     @State private var showDeleteConfirm2: Bool = false
@@ -53,6 +55,7 @@ struct ProfileView: View {
                         languageCard
                         legalCard
                         aboutCard
+                        roomScanPOCCard
                         if auth.isAuthenticated {
                             signOutButton
                         }
@@ -93,6 +96,9 @@ struct ProfileView: View {
             }
             .sheet(isPresented: $showMyDossiers) {
                 MyDossiersView(presentedAsSheet: true)
+            }
+            .sheet(isPresented: $showRoomScanPOC) {
+                RoomScanFlowView()
             }
             .alert("Accesso non riuscito", isPresented: authErrorBinding) {
                 Button("OK", role: .cancel) { authErrorMessage = nil }
@@ -427,6 +433,61 @@ struct ProfileView: View {
             .clipShape(RoundedRectangle(cornerRadius: ADRadius.card))
         }
         .buttonStyle(.plain)
+    }
+
+    // v2.0 Spatial Staging POC — accessibile a tutti SOLO se LiDAR presente.
+    // In v2.0 finale, sarà visibile solo per ruoli agency_admin/agent/super_admin
+    // (gating via `get_current_user_role()` di Marco — vedi HUB msg b1ce99d3).
+    @ViewBuilder
+    private var roomScanPOCCard: some View {
+        if RoomCaptureSession.isSupported {
+            Button {
+                showRoomScanPOC = true
+            } label: {
+                HStack(spacing: ADSpacing.s3) {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(ADColor.accentWarm.opacity(0.18))
+                            .frame(width: 38, height: 38)
+                        Image(systemName: "cube.transparent.fill")
+                            .font(.system(size: 18, weight: .regular))
+                            .foregroundStyle(ADColor.accentWarm)
+                    }
+                    VStack(alignment: .leading, spacing: 2) {
+                        HStack(spacing: ADSpacing.s2) {
+                            Text("Test scansione 3D")
+                                .font(ADTypography.bodyMedium.weight(.semibold))
+                                .foregroundStyle(ADColor.primary)
+                                .lineLimit(1)
+                            Text("POC")
+                                .font(.system(size: 9, weight: .bold))
+                                .tracking(1)
+                                .foregroundStyle(ADColor.background)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(ADColor.accentWarm)
+                                .clipShape(Capsule())
+                        }
+                        Text("Anteprima RoomPlan · Sprint 1 v2.0")
+                            .font(ADTypography.metadata)
+                            .foregroundStyle(ADColor.textMuted)
+                            .lineLimit(1)
+                    }
+                    Spacer(minLength: ADSpacing.s2)
+                    Image(systemName: "chevron.right")
+                        .foregroundStyle(ADColor.textLight)
+                        .font(.system(size: 14))
+                }
+                .padding(ADSpacing.Card.paddingLarge)
+                .background(ADColor.surface)
+                .overlay(
+                    RoundedRectangle(cornerRadius: ADRadius.card)
+                        .stroke(ADColor.accentWarm.opacity(0.4), lineWidth: 1)
+                )
+                .clipShape(RoundedRectangle(cornerRadius: ADRadius.card))
+            }
+            .buttonStyle(.plain)
+        }
     }
 
     private var signOutButton: some View {
