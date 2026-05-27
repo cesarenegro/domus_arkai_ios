@@ -1,0 +1,54 @@
+{
+  "view_id": "web_012",
+  "platform": "Next.js Desktop",
+  "view_name": "Agency Branding / White Label",
+  "function": "Configure agency identity for app and public property views.",
+  "visual_goal": "Clear brand customization without breaking Arkai Domus system.",
+  "layout": {
+    "background": "#F7F4ED",
+    "sections": [
+      "logo_upload",
+      "color_picker",
+      "contact_details",
+      "preview_desktop",
+      "preview_mobile"
+    ]
+  },
+  "components": {
+    "logo_upload": {
+      "background": "#FFFFFF",
+      "radius": 20
+    },
+    "color_picker": {
+      "allowed": "restrained colors only",
+      "default": "#556B45"
+    },
+    "preview": {
+      "shows": [
+        "agency logo",
+        "homepage hero",
+        "property card",
+        "powered by Arkai Domus"
+      ]
+    },
+    "save_button": {
+      "type": "button",
+      "label": "Salva identità",
+      "height": 50,
+      "radius": 14,
+      "background": "#556B45",
+      "text_color": "#FFFFFF",
+      "font": "16 semibold",
+      "interaction": "tap"
+    }
+  },
+  "rules": [
+    "Arkai Domus powered-by remains visible.",
+    "Agency primary color cannot reduce contrast.",
+    "Preview before saving."
+  ],
+  "do_not": [
+    "Do not allow neon brand colors without warning.",
+    "Do not hide Arkai Domus technology credit."
+  ]
+}

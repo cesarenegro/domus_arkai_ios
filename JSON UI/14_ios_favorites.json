@@ -1,0 +1,43 @@
+{
+  "view_id": "ios_014",
+  "platform": "iOS",
+  "view_name": "Favorites",
+  "function": "Show saved properties and support return/contact actions.",
+  "visual_goal": "Compact but readable saved property list.",
+  "layout": {
+    "background": "#F7F4ED",
+    "sections": [
+      "filter_pills",
+      "saved_property_list",
+      "compare_cta_optional"
+    ]
+  },
+  "components": {
+    "filter_pills": [
+      "Tutti",
+      "Case",
+      "Attici"
+    ],
+    "saved_property_card": {
+      "height": 150,
+      "background": "#FFFFFF",
+      "radius": 18,
+      "image_width": 132,
+      "fields": [
+        "price",
+        "title",
+        "area",
+        "metadata",
+        "status"
+      ],
+      "actions": [
+        "Rivedi",
+        "Contatta"
+      ]
+    }
+  },
+  "do_not": [
+    "Do not use tiny cards.",
+    "Do not show too many metadata rows."
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "view_id": "ios_002",
+  "platform": "iOS",
+  "view_name": "Home / Property Feed",
+  "function": "Show available properties clearly with elegant image-led cards.",
+  "visual_goal": "Premium real estate browsing, highly legible.",
+  "layout": {
+    "background": "#F7F4ED",
+    "navigation": "bottom_tab_bar",
+    "scroll": "vertical",
+    "sections": [
+      {
+        "name": "header",
+        "height": "compact",
+        "content": [
+          "agency_name",
+          "notification_icon"
+        ]
+      },
+      {
+        "name": "search",
+        "content": [
+          "search_field",
+          "filter_button"
+        ]
+      },
+      {
+        "name": "quick_filters",
+        "style": "horizontal_pills"
+      },
+      {
+        "name": "property_cards",
+        "style": "large_vertical_cards"
+      }
+    ]
+  },
+  "components": {
+    "search_field": {
+      "height": 46,
+      "radius": 16,
+      "background": "#FFFFFF",
+      "border": "#D8D2C4",
+      "placeholder": "Cerca per zona, indirizzo, tipologia..."
+    },
+    "filter_pills": [
+      "Milano",
+      "Vendita",
+      "€300k–€800k",
+      "80–150 mq"
+    ],
+    "property_card": {
+      "height": 300,
+      "radius": 22,
+      "background": "#FFFFFF",
+      "image_ratio": "16:10",
+      "shadow": "soft",
+      "visible_fields": [
+        "price",
+        "title",
+        "area",
+        "surface",
+        "rooms",
+        "bathrooms",
+        "feature"
+      ],
+      "badge_style": {
+        "background": "#556B45",
+        "text_color": "#FFFFFF",
+        "radius": 12
+      }
+    }
+  },
+  "data_examples": [
+    {
+      "price": "€780.000",
+      "title": "Attico in Brera",
+      "area": "Brera, Milano",
+      "metadata": "120 mq · 3 camere · 2 bagni · Terrazza"
+    },
+    {
+      "price": "€650.000",
+      "title": "Trilocale ristrutturato",
+      "area": "Porta Venezia, Milano",
+      "metadata": "95 mq · 2 camere · 2 bagni · Balcone"
+    }
+  ],
+  "actions": [
+    "open_property_detail",
+    "save_favorite",
+    "open_filters"
+  ],
+  "do_not": [
+    "Do not show cadastral data on cards.",
+    "Do not add more than 4 metadata items.",
+    "Do not make cards too small."
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "view_id": "ios_001",
+  "platform": "iOS",
+  "view_name": "Splash / Brand Intro",
+  "function": "Introduce the agency-branded app and Arkai Domus technology identity.",
+  "visual_goal": "Warm, minimal, premium first impression.",
+  "layout": {
+    "background": "#F7F4ED",
+    "alignment": "center",
+    "safe_area": "full",
+    "structure": [
+      "agency_logo_center",
+      "agency_name_large",
+      "powered_by_arkai_domus_small",
+      "optional_payoff"
+    ]
+  },
+  "components": {
+    "agency_logo": {
+      "max_width": 120,
+      "max_height": 80,
+      "style": "monochrome or original restrained"
+    },
+    "agency_name": {
+      "font": "SF Pro Display",
+      "size": 28,
+      "weight": "medium",
+      "color": "#243526"
+    },
+    "powered_by": {
+      "font": "SF Pro Text",
+      "size": 12,
+      "color": "#6E6A61"
+    }
+  },
+  "copy": {
+    "example_agency_name": "Studio Casa Milano",
+    "powered_by": "powered by Arkai Domus"
+  },
+  "do_not": [
+    "Do not use animation longer than 1 second.",
+    "Do not use neon colors.",
+    "Do not add marketing text blocks."
+  ]
+}

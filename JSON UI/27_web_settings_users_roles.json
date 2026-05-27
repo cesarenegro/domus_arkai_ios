@@ -1,0 +1,45 @@
+{
+  "view_id": "web_013",
+  "platform": "Next.js Desktop",
+  "view_name": "Settings / Users & Roles",
+  "function": "Manage agency users and permissions.",
+  "visual_goal": "Simple permission control.",
+  "layout": {
+    "background": "#F7F4ED",
+    "sections": [
+      "user_list",
+      "invite_user",
+      "role_selector"
+    ]
+  },
+  "roles": [
+    "agency_admin",
+    "agency_editor",
+    "agency_viewer"
+  ],
+  "components": {
+    "user_row": {
+      "height": 72,
+      "background": "#FFFFFF",
+      "radius": 14
+    },
+    "invite_button": {
+      "type": "button",
+      "label": "Invita utente",
+      "height": 50,
+      "radius": 14,
+      "background": "#556B45",
+      "text_color": "#FFFFFF",
+      "font": "16 semibold",
+      "interaction": "tap"
+    },
+    "role_badge": {
+      "background": "#F1EDE4",
+      "text_color": "#243526"
+    }
+  },
+  "do_not": [
+    "Do not expose raw database permissions to users.",
+    "Do not make role names too technical in UI labels."
+  ]
+}

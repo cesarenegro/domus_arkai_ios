@@ -1,0 +1,85 @@
+{
+  "view_id": "ios_003",
+  "platform": "iOS",
+  "view_name": "Search Filters",
+  "function": "Allow users to filter property listings quickly without visual overload.",
+  "visual_goal": "Clean filter form with large controls.",
+  "layout": {
+    "background": "#F7F4ED",
+    "presentation": "modal_sheet_or_fullscreen",
+    "sections": [
+      "contract_type",
+      "property_type",
+      "price_range",
+      "surface_range",
+      "rooms",
+      "features",
+      "apply_button"
+    ]
+  },
+  "components": {
+    "segmented_control": {
+      "height": 44,
+      "radius": 14,
+      "active_background": "#DDE5D3",
+      "active_text": "#243526"
+    },
+    "range_fields": {
+      "height": 50,
+      "background": "#FFFFFF",
+      "border": "#D8D2C4",
+      "radius": 14
+    },
+    "feature_chips": {
+      "style": "rounded_pills",
+      "selected_background": "#DDE5D3",
+      "selected_border": "#556B45"
+    },
+    "apply_button": {
+      "type": "button",
+      "label": "Applica filtri",
+      "height": 50,
+      "radius": 14,
+      "background": "#556B45",
+      "text_color": "#FFFFFF",
+      "font": "16 semibold",
+      "interaction": "tap"
+    },
+    "reset_button": {
+      "type": "button",
+      "label": "Cancella",
+      "height": 48,
+      "radius": 14,
+      "background": "#FFFFFF",
+      "border": "#D8D2C4",
+      "text_color": "#243526",
+      "font": "16 medium",
+      "interaction": "tap"
+    }
+  },
+  "fields": {
+    "contract_type": [
+      "Vendita",
+      "Affitto"
+    ],
+    "property_type": [
+      "Appartamento",
+      "Villa",
+      "Attico",
+      "Loft",
+      "Ufficio"
+    ],
+    "features": [
+      "Terrazza",
+      "Giardino",
+      "Box",
+      "Ascensore",
+      "Ristrutturato"
+    ]
+  },
+  "do_not": [
+    "No dense dropdown lists.",
+    "No tiny sliders.",
+    "No table-like forms."
+  ]
+}

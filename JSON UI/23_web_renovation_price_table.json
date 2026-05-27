@@ -1,0 +1,48 @@
+{
+  "view_id": "web_009",
+  "platform": "Next.js Desktop",
+  "view_name": "Renovation Price Table",
+  "function": "Configure renovation cost items used by the app.",
+  "visual_goal": "Simple controlled cost table, editable by agency/admin.",
+  "layout": {
+    "background": "#F7F4ED",
+    "sections": [
+      "category_tabs",
+      "price_items_table",
+      "edit_panel"
+    ]
+  },
+  "components": {
+    "category_tabs": [
+      "Bagno",
+      "Pittura",
+      "Pavimenti",
+      "Serramenti",
+      "Impianti",
+      "Cucina"
+    ],
+    "table_columns": [
+      "Intervento",
+      "Unità",
+      "Base",
+      "Medio",
+      "Premium",
+      "Attivo"
+    ],
+    "row_height": 64,
+    "edit_panel": {
+      "background": "#FFFFFF",
+      "radius": 20,
+      "position": "right_drawer"
+    }
+  },
+  "rules": [
+    "Keep numbers readable.",
+    "No complicated estimating formulas in main table.",
+    "Advanced settings hidden in drawer."
+  ],
+  "do_not": [
+    "No dense spreadsheet layout.",
+    "No more than 6 visible columns in main table."
+  ]
+}

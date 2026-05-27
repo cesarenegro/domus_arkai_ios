@@ -1,0 +1,52 @@
+{
+  "view_id": "web_007",
+  "platform": "Next.js Desktop",
+  "view_name": "Property Documents",
+  "function": "Upload and control visibility of property documents.",
+  "visual_goal": "Security-first document management.",
+  "layout": {
+    "background": "#F7F4ED",
+    "sections": [
+      "document_upload",
+      "document_list",
+      "visibility_controls"
+    ]
+  },
+  "document_types": [
+    "APE",
+    "Visura catastale",
+    "Planimetria catastale",
+    "Atto di provenienza",
+    "Regolamento condominiale",
+    "Altro"
+  ],
+  "visibility_options": [
+    "Privato agenzia",
+    "Visibile su richiesta",
+    "Pubblico"
+  ],
+  "components": {
+    "document_row": {
+      "height": 72,
+      "background": "#FFFFFF",
+      "radius": 14,
+      "fields": [
+        "icon",
+        "name",
+        "type",
+        "visibility",
+        "actions"
+      ]
+    },
+    "upload_dropzone": {
+      "height": 180,
+      "background": "#FFFFFF",
+      "border": "dashed #D8D2C4",
+      "radius": 20
+    }
+  },
+  "do_not": [
+    "Do not make documents public by default.",
+    "Do not expose cadastral documents in public app automatically."
+  ]
+}

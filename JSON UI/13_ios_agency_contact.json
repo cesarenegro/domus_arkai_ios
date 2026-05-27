@@ -1,0 +1,51 @@
+{
+  "view_id": "ios_013",
+  "platform": "iOS",
+  "view_name": "Agency Contact",
+  "function": "Provide direct contact options and agency details.",
+  "visual_goal": "Trust, immediacy, clear contact actions.",
+  "layout": {
+    "background": "#F7F4ED",
+    "sections": [
+      "agency_card",
+      "contact_buttons",
+      "address_card",
+      "opening_hours",
+      "mini_map"
+    ]
+  },
+  "components": {
+    "agency_card": {
+      "background": "#FFFFFF",
+      "radius": 22,
+      "includes": [
+        "logo_or_photo",
+        "agency_name",
+        "rating_optional"
+      ]
+    },
+    "contact_buttons": [
+      {
+        "label": "Chiama",
+        "style": "secondary"
+      },
+      {
+        "label": "WhatsApp",
+        "style": "secondary"
+      },
+      {
+        "label": "Email",
+        "style": "secondary"
+      }
+    ],
+    "map": {
+      "height": 130,
+      "radius": 18,
+      "style": "muted_map"
+    }
+  },
+  "do_not": [
+    "Do not overload with legal address details.",
+    "Do not use bright map colors."
+  ]
+}

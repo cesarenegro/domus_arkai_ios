@@ -1,0 +1,67 @@
+{
+  "view_id": "web_006",
+  "platform": "Next.js Desktop",
+  "view_name": "Property Insert Wizard — Step 3 Technical Details",
+  "function": "Manage technical details without overwhelming the user.",
+  "visual_goal": "Structured technical form with grouped fields.",
+  "layout": {
+    "background": "#F7F4ED",
+    "sections": [
+      "surface",
+      "rooms",
+      "building",
+      "features",
+      "energy"
+    ]
+  },
+  "groups": {
+    "surface": [
+      "Superficie commerciale",
+      "Superficie calpestabile"
+    ],
+    "rooms": [
+      "Locali",
+      "Camere",
+      "Bagni"
+    ],
+    "building": [
+      "Piano",
+      "Numero piani",
+      "Ascensore",
+      "Anno costruzione"
+    ],
+    "features": [
+      "Balcone",
+      "Terrazza",
+      "Giardino",
+      "Box",
+      "Posto auto",
+      "Cantina"
+    ],
+    "energy": [
+      "Classe energetica",
+      "EPgl",
+      "Riscaldamento",
+      "Climatizzazione"
+    ]
+  },
+  "components": {
+    "group_card": {
+      "background": "#FFFFFF",
+      "radius": 20,
+      "padding": 24
+    },
+    "toggle": {
+      "active": "#556B45",
+      "inactive": "#D8D2C4"
+    },
+    "input": {
+      "height": 46,
+      "radius": 10
+    }
+  },
+  "do_not": [
+    "Do not show all fields as one long ungrouped form.",
+    "Do not use tiny checkboxes."
+  ]
+}

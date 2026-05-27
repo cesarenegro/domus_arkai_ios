@@ -1,0 +1,84 @@
+{
+  "view_id": "ios_010",
+  "platform": "iOS",
+  "view_name": "Renovation Selection + Cost Summary",
+  "function": "Allow user to select renovation works and view a simple cost estimate.",
+  "visual_goal": "Readable cost overview, minimal chart, one-color system.",
+  "layout": {
+    "background": "#F7F4ED",
+    "scroll": "vertical",
+    "sections": [
+      "work_selection",
+      "total_card",
+      "range_selector",
+      "continue_button"
+    ]
+  },
+  "components": {
+    "work_item": {
+      "height": 58,
+      "background": "#FFFFFF",
+      "border": "#D8D2C4",
+      "radius": 14,
+      "fields": [
+        "icon",
+        "name",
+        "short_description",
+        "cost",
+        "checkbox"
+      ]
+    },
+    "selected_items": [
+      {
+        "name": "Tinteggiature",
+        "cost": "€2.300"
+      },
+      {
+        "name": "Pavimenti",
+        "cost": "€9.000"
+      },
+      {
+        "name": "Rifacimento bagno",
+        "cost": "€10.500"
+      },
+      {
+        "name": "Serramenti",
+        "cost": "€7.500"
+      },
+      {
+        "name": "Impianto elettrico",
+        "cost": "€4.700"
+      }
+    ],
+    "total_card": {
+      "background": "#F1EDE4",
+      "value": "€34.000",
+      "label": "Totale indicativo",
+      "radius": 20
+    },
+    "range_selector": {
+      "options": [
+        "Essenziale",
+        "Medio",
+        "Premium"
+      ],
+      "selected": "Medio"
+    },
+    "button": {
+      "type": "button",
+      "label": "Continua",
+      "height": 50,
+      "radius": 14,
+      "background": "#556B45",
+      "text_color": "#FFFFFF",
+      "font": "16 semibold",
+      "interaction": "tap"
+    }
+  },
+  "do_not": [
+    "No dense tables.",
+    "No pie charts.",
+    "No multi-color cost system.",
+    "No tiny labels."
+  ]
+}

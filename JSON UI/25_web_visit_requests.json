@@ -1,0 +1,39 @@
+{
+  "view_id": "web_011",
+  "platform": "Next.js Desktop",
+  "view_name": "Visit Requests",
+  "function": "View and manage property visit requests.",
+  "visual_goal": "Calendar-like, operational, easy for agency staff.",
+  "layout": {
+    "background": "#F7F4ED",
+    "sections": [
+      "date_filters",
+      "request_cards",
+      "confirmation_actions"
+    ]
+  },
+  "components": {
+    "request_card": {
+      "background": "#FFFFFF",
+      "radius": 18,
+      "height": 112,
+      "fields": [
+        "preferred_date",
+        "time_slot",
+        "client_name",
+        "property",
+        "status"
+      ]
+    },
+    "actions": [
+      "Conferma",
+      "Riprogramma",
+      "Chiama",
+      "Archivia"
+    ]
+  },
+  "do_not": [
+    "Do not require opening every row to see basic info.",
+    "Do not make it look like a complex CRM."
+  ]
+}

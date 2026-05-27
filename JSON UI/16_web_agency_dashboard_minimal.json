@@ -1,0 +1,77 @@
+{
+  "view_id": "web_002",
+  "platform": "Next.js Desktop",
+  "view_name": "Agency Dashboard",
+  "function": "Show main agency metrics with large cards and meaningful charts.",
+  "visual_goal": "Minimal, intuitive, readable, not overloaded.",
+  "layout": {
+    "background": "#F7F4ED",
+    "sidebar": {
+      "width": 260,
+      "background": "#243526"
+    },
+    "main_grid": {
+      "columns": 12,
+      "gap": 24,
+      "sections": [
+        "top_header",
+        "kpi_cards_row",
+        "large_line_chart",
+        "conversion_funnel",
+        "recent_activity",
+        "top_properties"
+      ]
+    }
+  },
+  "components": {
+    "kpi_cards": [
+      {
+        "label": "Immobili pubblicati",
+        "value": "57"
+      },
+      {
+        "label": "Richieste visita",
+        "value": "38"
+      },
+      {
+        "label": "Lead ricevuti",
+        "value": "124"
+      },
+      {
+        "label": "Conversione",
+        "value": "3,2%"
+      }
+    ],
+    "kpi_card_style": {
+      "background": "#FFFFFF",
+      "border": "#D8D2C4",
+      "radius": 20,
+      "padding": 24
+    },
+    "main_chart": {
+      "type": "line",
+      "title": "Andamento richieste visita",
+      "color": "#556B45",
+      "height": 320
+    },
+    "funnel": {
+      "type": "simple_funnel",
+      "color": "#DDE5D3",
+      "accent": "#556B45"
+    },
+    "sidebar_items": [
+      "Dashboard",
+      "Immobili",
+      "Richieste visita",
+      "Lead",
+      "Clienti",
+      "Report",
+      "Impostazioni"
+    ]
+  },
+  "do_not": [
+    "Do not use more than 4 KPI cards.",
+    "Do not use tiny charts.",
+    "Do not fill with meaningless rows."
+  ]
+}

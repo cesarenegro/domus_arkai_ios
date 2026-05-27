@@ -1,0 +1,63 @@
+{
+  "view_id": "web_003",
+  "platform": "Next.js Desktop",
+  "view_name": "Properties List",
+  "function": "Manage agency property inventory.",
+  "visual_goal": "Clear table with visual property recognition, not spreadsheet overload.",
+  "layout": {
+    "background": "#F7F4ED",
+    "sections": [
+      "header_actions",
+      "status_filters",
+      "property_table"
+    ]
+  },
+  "components": {
+    "primary_button": {
+      "label": "Nuovo immobile",
+      "background": "#556B45"
+    },
+    "filters": [
+      "Tutti",
+      "Online",
+      "Bozza",
+      "Riservato",
+      "Venduto",
+      "Archiviato"
+    ],
+    "table_columns": [
+      "Foto",
+      "Titolo",
+      "Zona",
+      "Prezzo",
+      "Stato",
+      "Lead",
+      "Aggiornato",
+      "Azioni"
+    ],
+    "row_height": 84,
+    "thumbnail": {
+      "width": 88,
+      "height": 58,
+      "radius": 10
+    },
+    "status_badges": {
+      "online": {
+        "background": "#DDE5D3",
+        "text": "#243526"
+      },
+      "bozza": {
+        "background": "#F1EDE4",
+        "text": "#6E6A61"
+      },
+      "venduto": {
+        "background": "#E8DDD2",
+        "text": "#A48768"
+      }
+    }
+  },
+  "do_not": [
+    "Do not show every property technical field in the list.",
+    "Do not make the table dense."
+  ]
+}

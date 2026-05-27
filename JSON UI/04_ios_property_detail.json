@@ -1,0 +1,76 @@
+{
+  "view_id": "ios_004",
+  "platform": "iOS",
+  "view_name": "Property Detail",
+  "function": "Present one property as a premium intelligent dossier.",
+  "visual_goal": "Image-led, calm, complete but not overloaded.",
+  "layout": {
+    "background": "#F7F4ED",
+    "scroll": "vertical",
+    "sections": [
+      "hero_image",
+      "price_title_area",
+      "main_specs",
+      "description_short",
+      "floorplan_preview",
+      "action_cards",
+      "gallery",
+      "technical_details",
+      "contact_cta"
+    ]
+  },
+  "components": {
+    "hero_image": {
+      "height": 300,
+      "ratio": "16:10",
+      "corner_radius_bottom": 24
+    },
+    "price": {
+      "font_size": 30,
+      "weight": "regular",
+      "color": "#1E1E1E"
+    },
+    "title": {
+      "font_size": 26,
+      "weight": "regular",
+      "color": "#243526"
+    },
+    "main_specs_cards": {
+      "layout": "horizontal_scroll",
+      "card_height": 72,
+      "background": "#FFFFFF",
+      "border": "#D8D2C4",
+      "items": [
+        "120 mq",
+        "3 camere",
+        "2 bagni",
+        "Terrazza"
+      ]
+    },
+    "action_cards": [
+      {
+        "label": "Calcola mutuo",
+        "icon": "calculator"
+      },
+      {
+        "label": "Stima ristrutturazione",
+        "icon": "hammer"
+      }
+    ],
+    "primary_cta": {
+      "type": "button",
+      "label": "Prenota visita",
+      "height": 50,
+      "radius": 14,
+      "background": "#556B45",
+      "text_color": "#FFFFFF",
+      "font": "16 semibold",
+      "interaction": "tap"
+    }
+  },
+  "do_not": [
+    "Do not show the entire technical database at the top.",
+    "Do not use more than two primary CTAs.",
+    "Do not show long text before core property data."
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "view_id": "ios_011",
+  "platform": "iOS",
+  "view_name": "Renovation Cost Chart",
+  "function": "Visualize renovation costs by category with horizontal bars.",
+  "visual_goal": "Simple, meaningful, not decorative.",
+  "layout": {
+    "background": "#F7F4ED",
+    "sections": [
+      "title",
+      "horizontal_bar_chart",
+      "total_card",
+      "range_cards"
+    ]
+  },
+  "components": {
+    "chart_type": "horizontal_bar",
+    "chart_color": "#556B45",
+    "chart_background": "#DDE5D3",
+    "items": [
+      {
+        "label": "Rifacimento bagno",
+        "value": 10500,
+        "percentage": "31%"
+      },
+      {
+        "label": "Pavimenti",
+        "value": 9000,
+        "percentage": "26%"
+      },
+      {
+        "label": "Serramenti",
+        "value": 7500,
+        "percentage": "22%"
+      },
+      {
+        "label": "Impianto elettrico",
+        "value": 4700,
+        "percentage": "14%"
+      },
+      {
+        "label": "Tinteggiature",
+        "value": 2300,
+        "percentage": "7%"
+      }
+    ],
+    "total": "€34.000",
+    "ranges": {
+      "Essenziale": "€27.000",
+      "Medio": "€34.000",
+      "Premium": "€45.000"
+    }
+  },
+  "do_not": [
+    "Do not use 3D charts.",
+    "Do not use pie chart.",
+    "Do not use more than one accent color."
+  ]
+}

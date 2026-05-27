@@ -1,0 +1,65 @@
+{
+  "view_id": "ios_007",
+  "platform": "iOS",
+  "view_name": "3D Floorplan",
+  "function": "Show elegant 3D spatial preview of the property.",
+  "visual_goal": "Light, architectural, premium, no captions inside the floorplan image.",
+  "layout": {
+    "background": "#F7F4ED",
+    "sections": [
+      "header",
+      "large_3d_preview",
+      "quick_specs",
+      "cta"
+    ]
+  },
+  "components": {
+    "floorplan_3d_image": {
+      "source": "property_3d_assets.preview_image_url",
+      "style": "static_image_mvp",
+      "background": "#FFFFFF",
+      "radius": 20,
+      "height": 360,
+      "image_rules": [
+        "light walls",
+        "beige or light wood floor",
+        "neutral furniture",
+        "soft daylight",
+        "no colored room labels",
+        "no numbered markers",
+        "no captions inside image",
+        "no oversaturated materials"
+      ]
+    },
+    "quick_specs": {
+      "layout": "vertical_or_grid",
+      "items": [
+        "95 mq",
+        "3 locali",
+        "2 bagni",
+        "Classe A2"
+      ]
+    },
+    "cta": {
+      "type": "button",
+      "label": "Esplora spazi",
+      "height": 50,
+      "radius": 14,
+      "background": "#556B45",
+      "text_color": "#FFFFFF",
+      "font": "16 semibold",
+      "interaction": "tap"
+    }
+  },
+  "future_support": [
+    "USDZ",
+    "GLB",
+    "interactive viewer"
+  ],
+  "do_not": [
+    "No captions inside floorplan.",
+    "No dark heavy colors.",
+    "No cartoon CGI.",
+    "No colored pins."
+  ]
+}

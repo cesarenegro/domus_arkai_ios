@@ -1,0 +1,37 @@
+{
+  "view_id": "ios_005",
+  "platform": "iOS",
+  "view_name": "Property Gallery",
+  "function": "Fullscreen or detail gallery for property photos.",
+  "visual_goal": "Large, elegant, immersive property images.",
+  "layout": {
+    "background": "#000000 or #F7F4ED depending mode",
+    "presentation": "fullscreen_viewer",
+    "content": [
+      "image",
+      "back_button",
+      "counter",
+      "optional_share"
+    ]
+  },
+  "components": {
+    "image": {
+      "mode": "fit_or_fill",
+      "supports_zoom": true,
+      "supports_swipe": true
+    },
+    "counter": {
+      "position": "bottom_center",
+      "style": "small pill",
+      "background": "rgba(0,0,0,0.35)",
+      "text_color": "#FFFFFF"
+    }
+  },
+  "data": {
+    "image_order": "property_media.order_index"
+  },
+  "do_not": [
+    "Do not overlay long captions.",
+    "Do not crop important interior details aggressively."
+  ]
+}

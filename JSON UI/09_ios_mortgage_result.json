@@ -1,0 +1,62 @@
+{
+  "view_id": "ios_009",
+  "platform": "iOS",
+  "view_name": "Mortgage Result",
+  "function": "Show indicative monthly payment and sustainability result.",
+  "visual_goal": "Clear result, reassuring but legally cautious.",
+  "layout": {
+    "background": "#F7F4ED",
+    "sections": [
+      "result_card",
+      "sustainability_bar",
+      "summary_card",
+      "disclaimer",
+      "request_consultation_button"
+    ]
+  },
+  "components": {
+    "result_card": {
+      "background": "#243526",
+      "text_color": "#FFFFFF",
+      "radius": 24,
+      "main_value": "€1.250 / mese"
+    },
+    "sustainability_bar": {
+      "track": "#DDE5D3",
+      "fill": "#556B45",
+      "labels": [
+        "Bassa",
+        "Buona",
+        "Alta"
+      ],
+      "status": "Buona"
+    },
+    "summary_card": {
+      "background": "#FFFFFF",
+      "items": [
+        "Importo mutuo indicativo",
+        "Incidenza sul reddito",
+        "Profilo potenzialmente sostenibile"
+      ]
+    },
+    "disclaimer": {
+      "background": "#F1EDE4",
+      "text": "Questa valutazione è indicativa e non costituisce approvazione formale da parte di istituti bancari."
+    },
+    "button": {
+      "type": "button",
+      "label": "Richiedi consulenza",
+      "height": 48,
+      "radius": 14,
+      "background": "#FFFFFF",
+      "border": "#D8D2C4",
+      "text_color": "#243526",
+      "font": "16 medium",
+      "interaction": "tap"
+    }
+  },
+  "do_not": [
+    "Do not use green as guaranteed approval.",
+    "Do not hide disclaimer."
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "view_id": "web_001",
+  "platform": "Next.js Desktop",
+  "view_name": "Agency Reserved Area Login",
+  "function": "Authenticate agency users into reserved desktop dashboard.",
+  "visual_goal": "Premium secure access page.",
+  "layout": {
+    "background": "#F7F4ED",
+    "structure": "two_column_or_centered_card",
+    "content": [
+      "brand",
+      "login_card",
+      "security_note"
+    ]
+  },
+  "components": {
+    "login_card": {
+      "width": 440,
+      "background": "#FFFFFF",
+      "radius": 24,
+      "shadow": "soft",
+      "padding": 32
+    },
+    "inputs": {
+      "height": 50,
+      "radius": 12,
+      "border": "#D8D2C4"
+    },
+    "button": {
+      "height": 50,
+      "background": "#556B45",
+      "text_color": "#FFFFFF",
+      "radius": 14
+    }
+  },
+  "do_not": [
+    "No stock SaaS blue style.",
+    "No overloaded marketing column."
+  ]
+}

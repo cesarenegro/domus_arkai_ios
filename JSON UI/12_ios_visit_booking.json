@@ -1,0 +1,56 @@
+{
+  "view_id": "ios_012",
+  "platform": "iOS",
+  "view_name": "Visit Booking",
+  "function": "Collect visit request details and create a lead.",
+  "visual_goal": "Fast, formal, agency-friendly.",
+  "layout": {
+    "background": "#F7F4ED",
+    "sections": [
+      "intro",
+      "date_time_fields",
+      "contact_fields",
+      "notes",
+      "submit_button",
+      "reassurance_note"
+    ]
+  },
+  "fields": [
+    "Data visita",
+    "Fascia oraria",
+    "Nome e cognome",
+    "Telefono",
+    "Email",
+    "Note"
+  ],
+  "components": {
+    "input": {
+      "height": 52,
+      "radius": 14,
+      "background": "#FFFFFF",
+      "border": "#D8D2C4"
+    },
+    "notes": {
+      "height": 96,
+      "radius": 16
+    },
+    "button": {
+      "type": "button",
+      "label": "Invia richiesta",
+      "height": 50,
+      "radius": 14,
+      "background": "#556B45",
+      "text_color": "#FFFFFF",
+      "font": "16 semibold",
+      "interaction": "tap"
+    }
+  },
+  "success_state": {
+    "title": "Richiesta ricevuta",
+    "message": "L’agenzia ti contatterà per confermare la visita."
+  },
+  "do_not": [
+    "Do not require account registration before request.",
+    "Do not ask unnecessary fields."
+  ]
+}

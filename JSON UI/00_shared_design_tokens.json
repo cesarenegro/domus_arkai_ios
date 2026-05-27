@@ -1,0 +1,84 @@
+{
+  "project": "Arkai Domus",
+  "document_type": "shared_ui_tokens",
+  "purpose": "Global UI system shared by iOS SwiftUI app and Next.js desktop reserved area.",
+  "brand": {
+    "name": "Arkai Domus",
+    "payoff": "La nuova esperienza immobiliare intelligente",
+    "tone": [
+      "premium",
+      "italian",
+      "architectural",
+      "minimal",
+      "warm",
+      "highly_readable"
+    ],
+    "white_label_rule": "Agency brand may appear as client-facing identity; Arkai Domus appears as powered-by technology platform."
+  },
+  "colors": {
+    "background_warm_ivory": "#F7F4ED",
+    "surface_white": "#FFFFFF",
+    "surface_soft_beige": "#F1EDE4",
+    "primary_deep_green": "#243526",
+    "primary_sage_green": "#556B45",
+    "primary_light_sage": "#DDE5D3",
+    "border_warm": "#D8D2C4",
+    "text_graphite": "#1E1E1E",
+    "text_muted": "#6E6A61",
+    "text_light": "#8C867A",
+    "accent_warm": "#A48768",
+    "warning_soft_terracotta": "#B8795D",
+    "success": "#556B45"
+  },
+  "typography": {
+    "ios": {
+      "font_family": "SF Pro / system",
+      "large_title": 34,
+      "page_title": 28,
+      "section_title": 22,
+      "card_title": 18,
+      "body": 16,
+      "small": 14,
+      "metadata_minimum": 12
+    },
+    "web": {
+      "display_serif": "Cormorant Garamond or Playfair Display",
+      "ui_sans": "Inter or system",
+      "display": "64px",
+      "h1": "48px",
+      "h2": "36px",
+      "h3": "28px",
+      "body": "16px",
+      "small": "14px"
+    }
+  },
+  "spacing": {
+    "base_grid": 8,
+    "ios_horizontal_padding": 20,
+    "card_padding": 16,
+    "large_card_padding": 24,
+    "desktop_page_margin": 40,
+    "section_gap": 32
+  },
+  "radius": {
+    "input": 12,
+    "card": 20,
+    "panel": 24,
+    "large": 28
+  },
+  "shadows": {
+    "card": "0 12px 30px rgba(36, 53, 38, 0.08)",
+    "soft": "0 8px 20px rgba(36, 53, 38, 0.06)"
+  },
+  "rules": [
+    "Use warm light backgrounds.",
+    "Use large readable cards.",
+    "Never overload screens.",
+    "Never use fake dense text.",
+    "Avoid tables on iPhone.",
+    "Use one primary objective per screen.",
+    "Use realistic device proportions.",
+    "Use floorplans without captions or numbered markers inside the image.",
+    "Charts use one sage-green family only."
+  ]
+}

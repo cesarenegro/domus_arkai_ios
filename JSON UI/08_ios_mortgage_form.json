@@ -1,0 +1,76 @@
+{
+  "view_id": "ios_008",
+  "platform": "iOS",
+  "view_name": "Mortgage Calculator Form",
+  "function": "Collect basic user financial inputs for indicative affordability simulation.",
+  "visual_goal": "Trustworthy, simple, private, non-banking interface.",
+  "layout": {
+    "background": "#F7F4ED",
+    "scroll": "vertical",
+    "sections": [
+      "intro",
+      "form_fields",
+      "privacy_note",
+      "calculate_button"
+    ]
+  },
+  "fields": [
+    {
+      "name": "monthly_income",
+      "label": "Reddito mensile netto",
+      "example": "€ 3.500"
+    },
+    {
+      "name": "deposit",
+      "label": "Anticipo disponibile",
+      "example": "€ 160.000"
+    },
+    {
+      "name": "mortgage_years",
+      "label": "Durata mutuo",
+      "example": "25 anni"
+    },
+    {
+      "name": "existing_debts",
+      "label": "Altri impegni mensili",
+      "example": "€ 250"
+    },
+    {
+      "name": "age",
+      "label": "Età",
+      "example": "38 anni"
+    },
+    {
+      "name": "first_home",
+      "label": "Prima casa",
+      "example": "Sì"
+    }
+  ],
+  "components": {
+    "input": {
+      "height": 52,
+      "radius": 14,
+      "background": "#FFFFFF",
+      "border": "#D8D2C4"
+    },
+    "button": {
+      "type": "button",
+      "label": "Calcola possibilità",
+      "height": 50,
+      "radius": 14,
+      "background": "#556B45",
+      "text_color": "#FFFFFF",
+      "font": "16 semibold",
+      "interaction": "tap"
+    },
+    "privacy_note": {
+      "icon": "lock",
+      "text": "I tuoi dati sono al sicuro e riservati.",
+      "font_size": 12
+    }
+  },
+  "do_not": [
+    "Do not imply bank approval.",
+    "Do not ask too many personal questions in MVP."
+  ]
+}

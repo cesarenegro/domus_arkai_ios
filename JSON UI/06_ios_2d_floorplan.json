@@ -1,0 +1,49 @@
+{
+  "view_id": "ios_006",
+  "platform": "iOS",
+  "view_name": "2D Floorplan",
+  "function": "Show a clean, zoomable 2D planimetry.",
+  "visual_goal": "Technical clarity without clutter.",
+  "layout": {
+    "background": "#F7F4ED",
+    "sections": [
+      "header",
+      "floorplan_image",
+      "quick_specs",
+      "distribution_card"
+    ]
+  },
+  "components": {
+    "floorplan_image": {
+      "background": "#FFFFFF",
+      "radius": 20,
+      "zoomable": true,
+      "min_height": 360,
+      "border": "#D8D2C4"
+    },
+    "quick_specs": {
+      "layout": "grid_2x2",
+      "items": [
+        "120 mq",
+        "5 locali",
+        "2 bagni",
+        "Terrazza"
+      ]
+    },
+    "distribution_card": {
+      "background": "#FFFFFF",
+      "radius": 20,
+      "items": [
+        "Soggiorno",
+        "Cucina",
+        "Camera padronale",
+        "Bagno en suite"
+      ]
+    }
+  },
+  "do_not": [
+    "Do not use colored room fills.",
+    "Do not show tiny unreadable plan text.",
+    "Do not overload with annotations."
+  ]
+}
