@@ -17,10 +17,12 @@ import Auth
 @MainActor
 struct RoomScanFlowView: View {
     @Environment(\.dismiss) private var dismiss
+    @AppStorage("hasSeenRoomScanOnboarding") private var hasSeenOnboarding: Bool = false
 
     @State private var capturedRoom: CapturedRoom?
     @State private var captureError: String?
     @State private var jsonPreview: String = ""
+    @State private var showOnboarding: Bool = false
 
     // MARK: - Upload state (Sprint 2)
     @State private var showUploadSheet: Bool = false
@@ -71,6 +73,15 @@ struct RoomScanFlowView: View {
             }
             .sheet(isPresented: $showUploadSheet) {
                 uploadSheet
+            }
+            .sheet(isPresented: $showOnboarding) {
+                RoomScanOnboardingView()
+                    .interactiveDismissDisabled()
+            }
+            .task {
+                if !hasSeenOnboarding {
+                    showOnboarding = true
+                }
             }
         }
     }

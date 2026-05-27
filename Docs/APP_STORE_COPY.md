@@ -51,6 +51,9 @@ I costi sono regionalizzati sui dati di mercato italiano 2026 e considerano le c
 — ARKAI VISION PRO —
 Carica una foto della stanza e ricevi una stima dettagliata delle opere necessarie. Cinque analisi al mese gratuite, perfette per esplorare il potenziale di un immobile prima della visita.
 
+— SPATIAL STAGING (v2.0) —
+Per ogni immobile compatibile, tocca "Proietta nello Spazio 1:1": inquadra il locale con la fotocamera e vedi gli arredi della proposta "Minimal Premium" sovrapposti in scala reale, direttamente in cantiere. Le agenzie partner scansionano gli ambienti grezzi con Apple RoomPlan; la nostra pipeline genera automaticamente il modello 3D arredato in formato USDZ.
+
 — VALUTAZIONE GEOLOCALIZZATA —
 Parametri di riferimento Arkai Domus per il mercato residenziale di pregio, basati sui valori OMI e sulla zonizzazione comunale. Comparazione con immobili simili nella stessa zona.
 
@@ -78,10 +81,10 @@ Domus Arkai è completamente gratuita per l'utente finale. Il servizio è offert
 — PRIVACY —
 Adesione completa al GDPR. Tutti i dati personali sono cifrati in transito e a riposo. Cancellazione totale dell'account in qualsiasi momento con un tap dal Profilo.
 
-Versione 1.0 — Maggio 2026.
+Versione 2.0 — Maggio 2026.
 ```
 
-3.789 caratteri ✓ (sotto i 4.000)
+⚠️ Conteggio caratteri da ri-verificare dopo l'aggiunta di "SPATIAL STAGING" (~480 caratteri in più, totale ~4.270 — vicinissimo o sopra il limite Apple di 4.000). Possibile fix: accorciare la descrizione "STIMA RISTRUTTURAZIONE" o "ARKAI VISION PRO" per liberare spazio.
 
 ---
 
@@ -98,6 +101,17 @@ Strategia: mix di tail comuni ("immobili", "casa", "mutuo") + differenzianti bra
 
 ## What's New (release notes — modificabile senza review)
 
+### v2.0 (release Spatial Staging — Maggio 2026)
+```
+Novità v2.0
+— Spatial Staging: per gli immobili scansionati dall'agenzia, proietta gli arredi in scala reale 1:1 con AR Quick Look. Inquadra il locale grezzo, vedilo arredato.
+— Nuova Modalità professionale per gli agenti: scansione 3D delle stanze con Apple RoomPlan (richiede iPhone Pro/iPad Pro con LiDAR).
+— Pipeline procedurale automatica: la nostra libreria di arredo "Minimal Premium" genera l'USDZ del locale in pochi minuti dopo la scansione.
+— Notifica push quando la scansione è pronta per il walkthrough.
+— Migliorie minori e fix.
+```
+
+### v1.0 (prima release — Maggio 2026)
 ```
 Prima release ufficiale di Domus Arkai.
 — Selezione editoriale di immobili italiani di pregio

@@ -1,6 +1,46 @@
 # Arkai Domus — App Store Submission Checklist
 
-Ultimo aggiornamento: 2026-05-25 — Build 3 (Marketing 1.0)
+Ultimo aggiornamento: 2026-05-27 — Pianificazione Build v2.0 (Spatial Staging)
+
+> **v1.0 già live su App Store** dal 2026-05-25 e operativa con download attivi.
+> Questa checklist serve come riferimento per il prossimo round (v2.0).
+
+---
+
+## 📦 v2.0 — Cose specifiche da verificare per il nuovo build
+
+### Repo lato iOS
+- [ ] `MARKETING_VERSION` bumpata a `2.0`
+- [ ] `CURRENT_PROJECT_VERSION` incrementato (build number)
+- [ ] Verificare che `NSCameraUsageDescription` includa anche "scansione 3D LiDAR" (copy attuale "analizza le stanze dell'immobile" copre ma può essere più esplicita)
+- [ ] Non serve aggiungere nuove capability: RoomPlan e QuickLook sono framework di sistema, niente entitlements aggiuntivi
+- [ ] Test su iPhone Pro fisico con LiDAR: flow completo (scan → upload → push → AR Quick Look)
+- [ ] Test su iPhone senza LiDAR: la voce "Test scansione 3D" NON deve apparire in Profilo (gating LiDAR + ruolo)
+
+### Backend (Marco / Supabase)
+- [x] Tabella `property_scans` con RLS policies attive
+- [x] Function `get_current_user_role()` SECURITY DEFINER
+- [x] Bucket Storage `property-staging` per file `.usdz`
+- [x] Trigger Postgres `pending` → pipeline USDZ generation
+- [x] Push notification "Scansione del locale pronta!" via `send-push` Edge Function
+- [x] Libreria modelli arredo "Minimal Premium" (salotto + camera + cucina)
+
+### App Store Connect (web)
+- [ ] **Description**: aggiungere sezione "SPATIAL STAGING (v2.0)" (vedi `APP_STORE_COPY.md`). ⚠️ Verificare che il totale resti sotto 4.000 caratteri
+- [ ] **What's New**: usare la versione v2.0 da `APP_STORE_COPY.md`
+- [ ] **Keywords**: valutare aggiunta di "ar" / "3d" (richiede rotazione di una keyword esistente per restare sotto 100 char)
+- [ ] **Screenshot 6.7" + 6.1"**: aggiungere almeno 2 screenshot nuovi: (1) flow scansione agente, (2) card "Spatial Staging" in PropertyDetail con AR pin
+- [ ] **App Privacy**: nessun cambio (non aggiungiamo nuove categorie di dati raccolti — gli scan sono geometria 3D, non PII)
+
+### Submit
+- [ ] Test end-to-end pre-Archive su iPhone Pro reale (POC scansione + upload + AR)
+- [ ] Archive → Validate → Upload via Xcode Organizer (~10-30 min validation Apple)
+- [ ] Compilare metadata su App Store Connect
+- [ ] **Add for Review** → **Submit to App Review** (24-48h primo giro)
+
+---
+
+## 🗂 v1.0 — Storico (già completato 2026-05-25)
 
 ---
 
