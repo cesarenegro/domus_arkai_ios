@@ -53,6 +53,7 @@ struct PropertyDetailView: View {
                         .containerRelativeFrame(.horizontal)
                     priceTitleHeader
                     mainSpecsRow
+                    spatialStagingSection
                     descriptionSection
                     mediaSection
                     actionEntries
@@ -305,6 +306,13 @@ struct PropertyDetailView: View {
             if let e = property.energyClass {
                 SpecCard(icon: "leaf", value: e.rawValue, label: "Classe")
             }
+        }
+    }
+
+    @ViewBuilder
+    private var spatialStagingSection: some View {
+        if let scan = model.primaryStagingScan {
+            SpatialStagingCard(scan: scan)
         }
     }
 

@@ -15,10 +15,18 @@ final class PropertyDetailViewModel {
     var agency: Agency?
     var isLoadingMedia: Bool = false
 
+    /// v2.0 Spatial Staging — scansioni con USDZ pronto per AR Quick Look.
+    var readyScans: [PropertyScan] = []
+
     private let favoritesStore = FavoritesStore.shared
 
     var isFavorite: Bool {
         favoritesStore.contains(property.id)
+    }
+
+    /// Prima scansione ready disponibile (per la card "Spatial Staging").
+    var primaryStagingScan: PropertyScan? {
+        readyScans.first
     }
 
     init(property: Property) {
@@ -35,10 +43,14 @@ final class PropertyDetailViewModel {
             guard let aid = property.agencyID else { return nil }
             return try? await AgencyService.shared.fetchAgency(id: aid)
         }()
+        async let scansTask: [PropertyScan] = {
+            (try? await PropertyScanService.shared.listReady(forPropertyID: property.id)) ?? []
+        }()
         media = (try? await mediaTask) ?? []
         floorplan2D = try? await plan2DTask
         floorplan3D = try? await plan3DTask
         agency = await agencyTask
+        readyScans = await scansTask
     }
 
     func toggleFavorite() {
