@@ -18,6 +18,18 @@ Tre macro-fasi tecniche, sequenziali in produzione ma parallelizzabili in svilup
 
 ---
 
+## Decisioni finalizzate (2026-05-27)
+
+| Tema | Scelta | Note |
+|---|---|---|
+| **Posizionamento UI agente** | **A** — voce "Modalità professionale" dentro `ProfileView` | Stessa app, gating via ruolo Supabase (es. `is_agency_member`). Niente app dedicata |
+| **Tier feature** | **A** — tutto FREE | Scan free per agency partner, AR cliente free (è il colpo di teatro che vende). Niente paywall AR su v2.0 |
+| **Switch materiali in-AR** | **B** — rimandato a v2.1 con `RealityKit` scene custom | v2.0 mostra UN solo USDZ default per immobile (variante "Minimal Premium" lato server). Switch fluido tra varianti = killer feature v2.1 |
+
+**Implicazione**: v2.0 più snella, ~12 giorni di iOS focused (rispetto ai ~18 con materiali in v2.0). Apre la porta a una v2.1 "premium" come secondo round di marketing.
+
+---
+
 ## 1. INTEGRAZIONE APPLE ROOMPLAN — Scansione strutturale LiDAR
 
 **Framework**: `RoomPlan` (Apple)
@@ -65,18 +77,21 @@ Tre macro-fasi tecniche, sequenziali in produzione ma parallelizzabili in svilup
 **Framework**: `QuickLook` + `ARQuickLookPreviewController` (Apple)
 **Owner iOS**: ios_ai
 
-### Task iOS
+### Task iOS (v2.0)
 - [ ] Nel `PropertyDetailView`, nuova sezione **"Vista Spatial Staging"** visibile quando esiste almeno un USDZ associato all'immobile
 - [ ] CTA principale **"Proietta nello Spazio 1:1"** (icona `arkit` o `cube.transparent.fill`)
-- [ ] Tap → presenta `ARQuickLookPreviewController` configurato con il file USDZ
+- [ ] Tap → presenta `ARQuickLookPreviewController` configurato col file USDZ default dell'immobile
 - [ ] Walkthrough 1:1 nativo: il cliente inquadra il locale grezzo, vede arredi sovrapposti a scala reale
-- [ ] **Selettore materiali in-AR**: pillole minimal su overlay (es. "Rovere" / "Gres scuro" / "Calacatta") che scambiano la variante USDZ in tempo reale
-- [ ] **Sync feedback al DB**: al cambio materiale, PATCH su `property_dossiers` o nuova tabella `staging_preferences(user_id, property_id, selected_variant)`
+- [ ] Caching locale USDZ (uso offline in cantiere senza rete)
 
-### Esperienza utente target
-- Cantiere grezzo → iPhone Pro inquadra → vede salotto già arredato 1:1
-- Cliente finale tocca "Rovere" → pavimento cambia istantaneamente
-- Esce dall'AR → il portale B2B di Arkai (Next.js) ha già aggiornato le preferenze del dossier
+### Rimandato a v2.1
+- ~~Selettore materiali in-AR~~ → richiede `RealityKit` scene custom con multi-mesh + material swap live. Verrà sviluppato come "killer feature" della v2.1 dopo lancio v2.0.
+- ~~Sync DB preferenze variante~~ → segue v2.1 quando ci sarà il selettore.
+
+### Esperienza utente target (v2.0)
+- Cliente apre PropertyDetail → vede card "Spatial Staging"
+- Tap "Proietta nello Spazio 1:1" → cantiere grezzo + iPhone → arredo USDZ default sovrapposto a scala reale
+- Walkthrough fisico nel locale, gestures pinch/rotate/move nativi di AR Quick Look
 
 ---
 
