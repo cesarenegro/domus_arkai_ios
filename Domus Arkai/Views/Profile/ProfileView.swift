@@ -26,6 +26,8 @@ struct ProfileView: View {
     @State private var showPassportEdit: Bool = false
     @State private var showMyDossiers: Bool = false
     @State private var showRoomScanPOC: Bool = false
+    @State private var agencyRole: AgencyRole? = nil
+    @State private var hasFetchedRole: Bool = false
     @State private var authErrorMessage: String?
     @State private var showDeleteConfirm1: Bool = false
     @State private var showDeleteConfirm2: Bool = false
@@ -76,6 +78,11 @@ struct ProfileView: View {
                 await notifications.refreshAuthorizationStatus()
                 if auth.isAuthenticated {
                     await notifications.persistTokenIfNeeded()
+                }
+                // Carica ruolo agency per gating "Modalità professionale" v2.0
+                if auth.isAuthenticated, !hasFetchedRole {
+                    agencyRole = await AgencyAccessService.shared.fetchMyRole()
+                    hasFetchedRole = true
                 }
             }
             .onChange(of: auth.isAuthenticated) { _, isAuth in
@@ -435,12 +442,15 @@ struct ProfileView: View {
         .buttonStyle(.plain)
     }
 
-    // v2.0 Spatial Staging POC — accessibile a tutti SOLO se LiDAR presente.
-    // In v2.0 finale, sarà visibile solo per ruoli agency_admin/agent/super_admin
-    // (gating via `get_current_user_role()` di Marco — vedi HUB msg b1ce99d3).
+    // v2.0 Spatial Staging — voce "Modalità professionale" visibile a:
+    //  1. utenti autenticati con ruolo agency (canScanProperties == true:
+    //     super_admin / agency_admin / agent — viewer escluso)
+    //  2. device con sensore LiDAR (iPhone Pro / iPad Pro)
     @ViewBuilder
     private var roomScanPOCCard: some View {
-        if RoomCaptureSession.isSupported {
+        let hasLiDAR = RoomCaptureSession.isSupported
+        let hasRole = agencyRole?.canScanProperties ?? false
+        if hasLiDAR && hasRole {
             Button {
                 showRoomScanPOC = true
             } label: {
