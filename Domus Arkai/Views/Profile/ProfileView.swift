@@ -26,6 +26,7 @@ struct ProfileView: View {
     @State private var showPassportEdit: Bool = false
     @State private var showMyDossiers: Bool = false
     @State private var showRoomScanPOC: Bool = false
+    @State private var showEmailSignIn: Bool = false
     @State private var agencyRole: AgencyRole? = nil
     @State private var hasFetchedRole: Bool = false
     @State private var authErrorMessage: String?
@@ -107,6 +108,9 @@ struct ProfileView: View {
             .sheet(isPresented: $showRoomScanPOC) {
                 RoomScanFlowView()
             }
+            .sheet(isPresented: $showEmailSignIn) {
+                EmailPasswordSignInView()
+            }
             .alert("Accesso non riuscito", isPresented: authErrorBinding) {
                 Button("OK", role: .cancel) { authErrorMessage = nil }
             } message: {
@@ -158,6 +162,28 @@ struct ProfileView: View {
                 .font(ADTypography.metadata)
                 .foregroundStyle(ADColor.textLight)
                 .fixedSize(horizontal: false, vertical: true)
+
+            // Secondary: accesso professionale email + password (account creati lato Supabase
+            // dall'amministratore Arkai per agenzie e super-admin).
+            Divider()
+                .padding(.vertical, ADSpacing.s2)
+
+            Button {
+                showEmailSignIn = true
+            } label: {
+                HStack(spacing: ADSpacing.s2) {
+                    Image(systemName: "key.fill")
+                        .font(.system(size: 12, weight: .medium))
+                    Text("Hai un account professionale? Accedi con email")
+                        .font(ADTypography.metadata.weight(.medium))
+                    Spacer(minLength: 0)
+                    Image(systemName: "arrow.right")
+                        .font(.system(size: 11, weight: .semibold))
+                }
+                .foregroundStyle(ADColor.primary)
+                .padding(.vertical, ADSpacing.s2)
+            }
+            .buttonStyle(.plain)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(ADSpacing.Card.paddingLarge)

@@ -117,6 +117,53 @@ final class AuthService {
         }
     }
 
+    // MARK: - Email + password (v2.0 — solo per account admin/super_admin creati lato Supabase)
+
+    enum EmailPasswordError: LocalizedError {
+        case invalidCredentials
+        case emailUnconfirmed
+        case generic(String)
+
+        var errorDescription: String? {
+            switch self {
+            case .invalidCredentials:
+                return "Email o password non corrette."
+            case .emailUnconfirmed:
+                return "Email non confermata. Controlla la tua casella di posta."
+            case .generic(let msg):
+                return msg
+            }
+        }
+    }
+
+    /// Login email+password per gli account amministrativi creati manualmente da
+    /// Marco lato Supabase (Auth dashboard → Add user). NON disponibile per
+    /// utenti consumer (che usano Sign in with Apple).
+    func signInWithEmail(_ email: String, password: String) async throws {
+        let cleanEmail = email.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        guard !cleanEmail.isEmpty, !password.isEmpty else {
+            throw EmailPasswordError.invalidCredentials
+        }
+        print("🟢 [Auth] signInWithEmail — \(cleanEmail)")
+        do {
+            try await client.auth.signIn(email: cleanEmail, password: password)
+            await refreshSession()
+            await NotificationService.shared.persistTokenIfNeeded()
+            await logAccess(clientType: "ios_app_admin")
+            print("✅ [Auth] signInWithEmail ok")
+        } catch {
+            let msg = error.localizedDescription.lowercased()
+            print("🔴 [Auth] signInWithEmail failed — \(error.localizedDescription)")
+            if msg.contains("invalid login") || msg.contains("invalid credentials") {
+                throw EmailPasswordError.invalidCredentials
+            }
+            if msg.contains("email not confirmed") || msg.contains("unconfirmed") {
+                throw EmailPasswordError.emailUnconfirmed
+            }
+            throw EmailPasswordError.generic(error.localizedDescription)
+        }
+    }
+
     func signOut() async throws {
         try await client.auth.signOut()
         currentUser = nil

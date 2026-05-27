@@ -23,10 +23,27 @@ actor AgencyAccessService {
 
     private var client: SupabaseClient { SupabaseManager.shared }
 
+    /// UID founder (Cesare) — bypass DEBUG per accesso totale alle feature v2.0
+    /// finché non viene completata l'auth email/password con account admin reali
+    /// creati lato Supabase. NON compilato in Release.
+    #if DEBUG
+    private static let founderUserID = "70297656-81a0-421a-836a-40f953cbc96b"
+    #endif
+
     /// Recupera il ruolo dell'utente loggato chiamando la RPC server-side.
     /// Ritorna `nil` se utente è B2C (non in `agency_users`) o se non autenticato.
     func fetchMyRole() async -> AgencyRole? {
         print("🟢 [AgencyAccess][Service] fetch role")
+
+        #if DEBUG
+        // Bypass DEBUG founder: garantisce accesso super_admin a Cesare.
+        if let uid = await AuthService.shared.currentUser?.id.uuidString.lowercased(),
+           uid == Self.founderUserID {
+            print("🟢 [AgencyAccess][Service] DEBUG bypass → role=super_admin (founder uid)")
+            return .superAdmin
+        }
+        #endif
+
         do {
             // La function torna `text` opzionale. Postgres rende come stringa quotata.
             let role: String? = try await client
