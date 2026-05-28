@@ -16,6 +16,10 @@ import RoomPlan
 import ARKit
 
 struct RoomCaptureRepresentable: UIViewControllerRepresentable {
+    /// Controller condiviso che permette a SwiftUI di triggerare stop/cancel
+    /// sulla session attiva (i bottoni UIKit non sono accessibili senza una
+    /// UINavigationController, quindi facciamo overlay SwiftUI esterno).
+    let controller: RoomScanController
     let onComplete: (CapturedRoom) -> Void
     let onCancel: () -> Void
     let onError: (Error) -> Void
@@ -25,11 +29,30 @@ struct RoomCaptureRepresentable: UIViewControllerRepresentable {
         vc.onComplete = onComplete
         vc.onCancel = onCancel
         vc.onError = onError
+        // Wire controller per stop/cancel da SwiftUI
+        Task { @MainActor in
+            controller.hostVC = vc
+        }
         return vc
     }
 
     func updateUIViewController(_ uiViewController: RoomScanViewController, context: Context) {
         // no-op
+    }
+}
+
+/// Bridge controller per inviare comandi da SwiftUI al RoomScanViewController UIKit.
+@Observable
+@MainActor
+final class RoomScanController {
+    weak var hostVC: RoomScanViewController?
+
+    func requestStop() {
+        hostVC?.publicStopSession()
+    }
+
+    func requestCancel() {
+        hostVC?.publicCancelSession()
     }
 }
 
@@ -119,6 +142,20 @@ final class RoomScanViewController: UIViewController, RoomCaptureViewDelegate, R
     }
 
     @objc private func didTapCancel() {
+        hasFinished = true
+        stopSession()
+        onCancel?()
+    }
+
+    // MARK: - Public bridge (chiamato da SwiftUI overlay)
+
+    func publicStopSession() {
+        guard !hasFinished else { return }
+        stopSession()
+    }
+
+    func publicCancelSession() {
+        guard !hasFinished else { return }
         hasFinished = true
         stopSession()
         onCancel?()

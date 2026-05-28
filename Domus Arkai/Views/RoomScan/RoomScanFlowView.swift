@@ -24,6 +24,7 @@ struct RoomScanFlowView: View {
     @State private var captureError: String?
     @State private var jsonPreview: String = ""
     @State private var showOnboarding: Bool = false
+    @State private var scanController = RoomScanController()
 
     // MARK: - Upload state (Sprint 2)
     @State private var showUploadSheet: Bool = false
@@ -73,12 +74,17 @@ struct RoomScanFlowView: View {
                 } else if let captureError {
                     errorView(captureError)
                 } else {
-                    RoomCaptureRepresentable(
-                        onComplete: handleComplete,
-                        onCancel: { dismiss() },
-                        onError: handleError
-                    )
-                    .ignoresSafeArea()
+                    ZStack(alignment: .top) {
+                        RoomCaptureRepresentable(
+                            controller: scanController,
+                            onComplete: handleComplete,
+                            onCancel: { dismiss() },
+                            onError: handleError
+                        )
+                        .ignoresSafeArea()
+
+                        captureOverlayBar
+                    }
                 }
             }
             .navigationTitle("Scansione 3D · POC")
@@ -107,6 +113,56 @@ struct RoomScanFlowView: View {
                 }
             }
         }
+    }
+
+    // MARK: - Capture overlay (Annulla / Termina)
+
+    private var captureOverlayBar: some View {
+        HStack(spacing: ADSpacing.s3) {
+            Button {
+                scanController.requestCancel()
+            } label: {
+                HStack(spacing: ADSpacing.s1) {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 13, weight: .semibold))
+                    Text("Annulla")
+                        .font(.system(size: 14, weight: .semibold))
+                }
+                .foregroundStyle(.white)
+                .padding(.horizontal, ADSpacing.s4)
+                .padding(.vertical, ADSpacing.s2)
+                .background(.regularMaterial)
+                .clipShape(Capsule())
+                .overlay(
+                    Capsule().stroke(.white.opacity(0.3), lineWidth: 1)
+                )
+            }
+            .buttonStyle(.plain)
+
+            Spacer()
+
+            Button {
+                scanController.requestStop()
+            } label: {
+                HStack(spacing: ADSpacing.s1) {
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 13, weight: .semibold))
+                    Text("Termina")
+                        .font(.system(size: 14, weight: .semibold))
+                }
+                .foregroundStyle(ADColor.background)
+                .padding(.horizontal, ADSpacing.s4)
+                .padding(.vertical, ADSpacing.s2)
+                .background(ADColor.primary)
+                .clipShape(Capsule())
+                .overlay(
+                    Capsule().stroke(.white.opacity(0.5), lineWidth: 1)
+                )
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(.horizontal, ADSpacing.s4)
+        .padding(.top, ADSpacing.s5)
     }
 
     // MARK: - Capture callbacks
