@@ -43,6 +43,13 @@ struct RoomScanFlowView: View {
     @State private var newPropertyCity: String = ""
     @State private var userGeneratedCount: Int? = nil // nil = non ancora caricato
     @State private var newPropertyError: String?
+    /// super_admin bypassa la quota max-1 per user-generated properties (Cesare/Arkai)
+    @State private var myRole: AgencyRole? = nil
+
+    /// True se l'utente loggato è super_admin (bypass quota max-1)
+    private var isSuperAdmin: Bool {
+        myRole == .superAdmin
+    }
 
     enum TargetMode: String, CaseIterable {
         case existing  // associa a property esistente (picker)
@@ -402,6 +409,9 @@ struct RoomScanFlowView: View {
                 if userGeneratedCount == nil {
                     await loadUserGeneratedCount()
                 }
+                if myRole == nil {
+                    myRole = await AgencyAccessService.shared.fetchMyRole()
+                }
             }
         }
     }
@@ -459,7 +469,7 @@ struct RoomScanFlowView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 12))
             }
 
-            if let count = userGeneratedCount, count >= 1 {
+            if !isSuperAdmin, let count = userGeneratedCount, count >= 1 {
                 HStack(alignment: .top, spacing: ADSpacing.s2) {
                     Image(systemName: "exclamationmark.triangle.fill")
                         .foregroundStyle(ADColor.warning)
@@ -607,7 +617,8 @@ struct RoomScanFlowView: View {
         case .existing:
             return selectedProperty != nil
         case .new:
-            let quotaOK = (userGeneratedCount ?? 0) < 1
+            // super_admin bypassa la quota max-1
+            let quotaOK = isSuperAdmin || (userGeneratedCount ?? 0) < 1
             return quotaOK && !newPropertyCity.trimmingCharacters(in: .whitespaces).isEmpty
         }
     }
