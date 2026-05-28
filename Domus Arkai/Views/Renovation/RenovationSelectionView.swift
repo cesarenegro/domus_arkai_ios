@@ -97,10 +97,23 @@ struct RenovationSelectionView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Superficie da ristrutturare")
-                        .font(ADTypography.metadata.weight(.semibold))
-                        .foregroundStyle(ADColor.textMuted)
-                        .tracking(0.5)
+                    HStack(spacing: ADSpacing.s2) {
+                        Text("Superficie da ristrutturare")
+                            .font(ADTypography.metadata.weight(.semibold))
+                            .foregroundStyle(ADColor.textMuted)
+                            .tracking(0.5)
+                        // v2.1: badge se la metratura proviene da scansione 3D
+                        if model.scanArea != nil, model.surfaceOverride == model.scanArea {
+                            Text("SCAN 3D")
+                                .font(.system(size: 8, weight: .bold))
+                                .tracking(1)
+                                .foregroundStyle(ADColor.background)
+                                .padding(.horizontal, 5)
+                                .padding(.vertical, 2)
+                                .background(ADColor.accentWarm)
+                                .clipShape(Capsule())
+                        }
+                    }
                     HStack(alignment: .firstTextBaseline, spacing: 4) {
                         Text("\(Int(model.workingSurface))")
                             .font(ADTypography.priceMedium.monospacedDigit())

@@ -28,6 +28,11 @@ final class RenovationViewModel {
     /// Override metratura editabile dall'utente. Nil = usa `propertySurface`.
     var surfaceOverride: Double?
 
+    /// v2.1 — Se la property ha una scansione 3D RoomPlan disponibile, l'area
+    /// effettiva (m² dei floors) viene popolata qui e usata come override di
+    /// default. L'utente può comunque modificarla.
+    var scanArea: Double?
+
     init(property: Property) {
         self.property = property
     }
@@ -51,11 +56,21 @@ final class RenovationViewModel {
         async let categoriesResult = fetchCategoriesLogged()
         async let factorsResult = fetchFactorsLogged()
         async let regionalTask = (try? BOQService.shared.fetchRegionalCoefficient(city: property.city ?? "Milano"))
+        // v2.1 — pre-fetch ultima scansione per auto-popolare l'area
+        async let scanTask: PropertyScan? = (try? await PropertyScanService.shared.latestScan(forPropertyID: property.id))
 
         let rawItems = await itemsResult
         let cats = await categoriesResult
         difficultyFactors = await factorsResult
         regionalCoef = await regionalTask
+        if let scan = await scanTask, let area = scan.totalAreaM2, area > 0 {
+            scanArea = area
+            // Auto-imposta override SOLO se l'utente non ha già toccato il campo
+            if surfaceOverride == nil {
+                surfaceOverride = area
+                print("✅ [Renovation][VM] auto-filled surfaceOverride = \(area) m² da scansione 3D")
+            }
+        }
 
         let catByID = Dictionary(uniqueKeysWithValues: cats.map { ($0.id, $0.name) })
         items = rawItems.map { item in
