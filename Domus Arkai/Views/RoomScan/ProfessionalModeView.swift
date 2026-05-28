@@ -16,6 +16,8 @@ struct ProfessionalModeView: View {
     let agencyRole: AgencyRole?
 
     @State private var showScanFlow: Bool = false
+    @State private var showARDemo: Bool = false
+    @State private var demoErrorMessage: String?
 
     var body: some View {
         ZStack {
@@ -37,6 +39,20 @@ struct ProfessionalModeView: View {
         .navigationBarTitleDisplayMode(.large)
         .fullScreenCover(isPresented: $showScanFlow) {
             RoomScanFlowView()
+        }
+        .fullScreenCover(isPresented: $showARDemo) {
+            if let url = USDZDownloader.bundledDemoURL() {
+                ARQuickLookPresenter(localFileURL: url)
+                    .ignoresSafeArea()
+            }
+        }
+        .alert("Demo AR non disponibile", isPresented: Binding(
+            get: { demoErrorMessage != nil },
+            set: { if !$0 { demoErrorMessage = nil } }
+        )) {
+            Button("OK") { demoErrorMessage = nil }
+        } message: {
+            Text(demoErrorMessage ?? "")
         }
     }
 
@@ -100,6 +116,20 @@ struct ProfessionalModeView: View {
             )
         }
         .buttonStyle(.plain)
+
+        actionRow(
+            icon: "arkit",
+            tint: ADColor.primary,
+            title: "Prova AR demo",
+            subtitle: "Apri AR Quick Look col modello USDZ bundlato (test rapido)",
+            accent: false
+        ) {
+            if USDZDownloader.bundledDemoURL() != nil {
+                showARDemo = true
+            } else {
+                demoErrorMessage = "File `demo_room.usdz` non bundlato. Aggiungilo al target Xcode per testare l'AR Quick Look."
+            }
+        }
     }
 
     private func actionRow(
