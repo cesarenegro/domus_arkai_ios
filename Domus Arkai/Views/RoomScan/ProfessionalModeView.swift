@@ -17,6 +17,7 @@ struct ProfessionalModeView: View {
 
     @State private var showScanFlow: Bool = false
     @State private var showARDemo: Bool = false
+    @State private var showMaterialSwitch: Bool = false
     @State private var demoErrorMessage: String?
 
     var body: some View {
@@ -44,6 +45,11 @@ struct ProfessionalModeView: View {
             if let url = USDZDownloader.bundledDemoURL() {
                 ARQuickLookPresenter(localFileURL: url)
                     .ignoresSafeArea()
+            }
+        }
+        .fullScreenCover(isPresented: $showMaterialSwitch) {
+            if let url = USDZDownloader.bundledDemoURL() {
+                MaterialSwitchView(usdzURL: url)
             }
         }
         .alert("Demo AR non disponibile", isPresented: Binding(
@@ -128,6 +134,20 @@ struct ProfessionalModeView: View {
                 showARDemo = true
             } else {
                 demoErrorMessage = "File `demo_room.usdz` non bundlato. Aggiungilo al target Xcode per testare l'AR Quick Look."
+            }
+        }
+
+        actionRow(
+            icon: "paintpalette.fill",
+            tint: ADColor.accentWarm,
+            title: "Switch materiali (preview)",
+            subtitle: "Cambia finitura USDZ live · Rovere · Gres · Calacatta",
+            accent: false
+        ) {
+            if USDZDownloader.bundledDemoURL() != nil {
+                showMaterialSwitch = true
+            } else {
+                demoErrorMessage = "File `demo_room.usdz` non bundlato. Aggiungilo al target Xcode per provare il switch materiali."
             }
         }
     }
