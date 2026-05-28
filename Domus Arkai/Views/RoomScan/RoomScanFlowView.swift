@@ -13,6 +13,7 @@
 import SwiftUI
 import RoomPlan
 import Auth
+import simd
 
 @MainActor
 struct RoomScanFlowView: View {
@@ -26,7 +27,11 @@ struct RoomScanFlowView: View {
 
     // MARK: - Upload state (Sprint 2)
     @State private var showUploadSheet: Bool = false
-    @State private var propertyIDInput: String = ""
+    @State private var scanLabel: String = ""
+    @State private var selectedProperty: Property?
+    @State private var availableProperties: [Property] = []
+    @State private var loadingProperties: Bool = false
+    @State private var propertiesLoadError: String?
     @State private var uploadPhase: UploadPhase = .idle
     @State private var uploadedScan: PropertyScan?
     @State private var uploadError: String?
@@ -246,31 +251,41 @@ struct RoomScanFlowView: View {
             ZStack {
                 ADColor.background.ignoresSafeArea()
                 ScrollView {
-                    VStack(alignment: .leading, spacing: ADSpacing.s4) {
-                        Text("INSERIMENTO TEMPORANEO")
+                    VStack(alignment: .leading, spacing: ADSpacing.s5) {
+                        Text("SALVA SCANSIONE")
                             .font(.system(size: 10, weight: .semibold))
                             .tracking(2)
                             .foregroundStyle(ADColor.accentWarm)
                         Text("Associa la scansione a un immobile")
                             .font(ADTypography.sectionTitle)
                             .foregroundStyle(ADColor.primary)
-                        Text("Per ora inserisci manualmente l'UUID della property. Nella v2.0 finale ci sarà un picker delle property dell'agenzia.")
-                            .font(ADTypography.small)
-                            .foregroundStyle(ADColor.textMuted)
-                            .fixedSize(horizontal: false, vertical: true)
 
-                        TextField("UUID property (es. A5598C7A-…)", text: $propertyIDInput)
-                            .font(.system(size: 14, design: .monospaced))
-                            .textInputAutocapitalization(.never)
-                            .autocorrectionDisabled()
-                            .padding(.horizontal, ADSpacing.s4)
-                            .frame(height: 50)
-                            .background(ADColor.surface)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 12)
-                                    .stroke(ADColor.border, lineWidth: 1)
-                            )
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                        // Nome scansione
+                        VStack(alignment: .leading, spacing: ADSpacing.s2) {
+                            Text("NOME SCANSIONE")
+                                .font(.system(size: 10, weight: .semibold))
+                                .tracking(2)
+                                .foregroundStyle(ADColor.textMuted)
+                            TextField("Es. Bagno principale", text: $scanLabel)
+                                .font(ADTypography.body)
+                                .padding(.horizontal, ADSpacing.s4)
+                                .frame(height: 48)
+                                .background(ADColor.surface)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(ADColor.border, lineWidth: 1)
+                                )
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                        }
+
+                        // Property picker
+                        VStack(alignment: .leading, spacing: ADSpacing.s2) {
+                            Text("IMMOBILE")
+                                .font(.system(size: 10, weight: .semibold))
+                                .tracking(2)
+                                .foregroundStyle(ADColor.textMuted)
+                            propertyPickerContent
+                        }
 
                         Button {
                             startUpload()
@@ -280,7 +295,7 @@ struct RoomScanFlowView: View {
                                 Text("Conferma e carica")
                             }
                             .frame(maxWidth: .infinity)
-                            .frame(height: 50)
+                            .frame(height: 52)
                             .background(canSubmit ? ADColor.primary : ADColor.textLight)
                             .foregroundStyle(ADColor.background)
                             .clipShape(RoundedRectangle(cornerRadius: 14))
@@ -288,7 +303,8 @@ struct RoomScanFlowView: View {
                         .buttonStyle(.plain)
                         .disabled(!canSubmit)
                     }
-                    .padding(ADSpacing.s5)
+                    .padding(.horizontal, ADSpacing.s5)
+                    .padding(.vertical, ADSpacing.s5)
                 }
             }
             .navigationTitle("Carica scansione")
@@ -299,30 +315,132 @@ struct RoomScanFlowView: View {
                         .foregroundStyle(ADColor.primary)
                 }
             }
+            .task {
+                if availableProperties.isEmpty && !loadingProperties {
+                    await loadProperties()
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var propertyPickerContent: some View {
+        if loadingProperties {
+            HStack(spacing: ADSpacing.s2) {
+                ProgressView().tint(ADColor.primary)
+                Text("Carico immobili…")
+                    .font(ADTypography.small)
+                    .foregroundStyle(ADColor.textMuted)
+                Spacer()
+            }
+            .padding(ADSpacing.s4)
+            .background(ADColor.surface)
+            .clipShape(RoundedRectangle(cornerRadius: 12))
+        } else if let propertiesLoadError {
+            Text(propertiesLoadError)
+                .font(ADTypography.small)
+                .foregroundStyle(ADColor.warning)
+                .padding(ADSpacing.s4)
+        } else if availableProperties.isEmpty {
+            Text("Nessun immobile disponibile.")
+                .font(ADTypography.small)
+                .foregroundStyle(ADColor.textMuted)
+                .padding(ADSpacing.s4)
+        } else {
+            VStack(spacing: ADSpacing.s2) {
+                ForEach(availableProperties) { property in
+                    Button {
+                        selectedProperty = property
+                    } label: {
+                        propertyRow(property, selected: selectedProperty?.id == property.id)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+        }
+    }
+
+    private func propertyRow(_ property: Property, selected: Bool) -> some View {
+        HStack(spacing: ADSpacing.s3) {
+            AsyncImage(url: property.coverImageURL) { phase in
+                switch phase {
+                case .success(let image): image.resizable().aspectRatio(contentMode: .fill)
+                default: ADColor.surfaceSoft
+                }
+            }
+            .frame(width: 50, height: 50)
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(property.title)
+                    .font(ADTypography.smallMedium.weight(.semibold))
+                    .foregroundStyle(ADColor.primary)
+                    .lineLimit(1)
+                Text(property.locationLine)
+                    .font(ADTypography.metadata)
+                    .foregroundStyle(ADColor.textMuted)
+                    .lineLimit(1)
+            }
+            Spacer(minLength: 0)
+            Image(systemName: selected ? "checkmark.circle.fill" : "circle")
+                .font(.system(size: 18))
+                .foregroundStyle(selected ? ADColor.primary : ADColor.textLight)
+        }
+        .padding(ADSpacing.s3)
+        .background(selected ? ADColor.primaryLight.opacity(0.4) : ADColor.surface)
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(selected ? ADColor.primarySoft : ADColor.border, lineWidth: 1)
+        )
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+
+    private func loadProperties() async {
+        loadingProperties = true
+        propertiesLoadError = nil
+        defer { loadingProperties = false }
+        do {
+            let props = try await PropertyService.shared.fetchPublishedProperties()
+            availableProperties = props
+            print("✅ [RoomScan][Flow] loaded \(props.count) properties for picker")
+        } catch {
+            propertiesLoadError = "Impossibile caricare gli immobili: \(error.localizedDescription)"
+            print("🔴 [RoomScan][Flow] loadProperties failed — \(error.localizedDescription)")
         }
     }
 
     private var canSubmit: Bool {
-        UUID(uuidString: propertyIDInput.trimmingCharacters(in: .whitespaces)) != nil
+        selectedProperty != nil && !scanLabel.trimmingCharacters(in: .whitespaces).isEmpty
+    }
+
+    /// Wrapper interno per il blob scan_json: include label custom + CapturedRoom.
+    /// Marco lato server può estrarre il label con `scan_json->>'label'`.
+    /// In v2.1 col DDL aggiornato avremo una colonna dedicata `label`.
+    private struct ScanUploadPayload: Encodable {
+        let label: String
+        let capturedRoom: CapturedRoom
     }
 
     private func startUpload() {
         guard let room = capturedRoom else { return }
-        guard let propertyID = UUID(uuidString: propertyIDInput.trimmingCharacters(in: .whitespaces)) else { return }
+        guard let property = selectedProperty else { return }
         guard let userID = AuthService.shared.currentUser?.id else {
             uploadPhase = .errored("Non sei autenticato.")
             return
         }
+        let trimmedLabel = scanLabel.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedLabel.isEmpty else { return }
         showUploadSheet = false
         uploadPhase = .uploading
         Task {
             do {
-                // Codifica blob CapturedRoom
-                let blob = try AnyCodable(room)
+                // Wrap: { label, capturedRoom } → AnyCodable → scan_json jsonb
+                let payload = ScanUploadPayload(label: trimmedLabel, capturedRoom: room)
+                let blob = try AnyCodable(payload)
                 let area = computeArea(from: room)
                 let count = max(1, room.sections.count)
                 let draft = PropertyScanDraft(
-                    propertyID: propertyID,
+                    propertyID: property.id,
                     scannedBy: userID,
                     scanJSON: blob,
                     totalAreaM2: area,
@@ -372,17 +490,20 @@ struct RoomScanFlowView: View {
     // MARK: - JSON debug card
 
     private var jsonDebugCard: some View {
-        VStack(alignment: .leading, spacing: ADSpacing.s2) {
-            Text("JSON DEBUG (CapturedRoom encoded)")
-                .font(.system(size: 10, weight: .semibold))
-                .tracking(1)
-                .foregroundStyle(ADColor.textMuted)
+        DisclosureGroup {
             Text(jsonPreview)
                 .font(.system(size: 10, design: .monospaced))
                 .foregroundStyle(ADColor.text.opacity(0.8))
                 .textSelection(.enabled)
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.top, ADSpacing.s2)
+        } label: {
+            Text("JSON debug · \(jsonPreview.count / 1024) KB")
+                .font(.system(size: 11, weight: .semibold))
+                .tracking(1)
+                .foregroundStyle(ADColor.textMuted)
         }
+        .tint(ADColor.textMuted)
         .padding(ADSpacing.s4)
         .background(ADColor.surface)
         .overlay(
@@ -439,14 +560,31 @@ struct RoomScanFlowView: View {
 
     // MARK: - Helpers
 
-    /// Area totale approssimativa sommando l'area dei pavimenti rilevati.
-    /// Apple usa SI: dimensions x/z sono in metri.
+    /// Area totale approssimativa.
+    /// Strategia:
+    ///   1. Se RoomPlan ha popolato `floors`, somma w*d delle dimensions
+    ///   2. Fallback su bounding-box delle posizioni delle walls nel piano xz
+    /// Apple usa SI: dimensions/translation in metri.
     private func computeArea(from room: CapturedRoom) -> Double {
-        room.floors.reduce(0.0) { sum, floor in
+        // 1. Primary: sum floors area
+        let floorArea = room.floors.reduce(0.0) { sum, floor in
             let w = Double(floor.dimensions.x)
             let d = Double(floor.dimensions.z)
             return sum + (w * d)
         }
+        if floorArea > 0.5 { // sanity check: una stanza minima è > 0.5 m²
+            return floorArea
+        }
+        // 2. Fallback: bounding box delle walls nel piano xz
+        let walls = room.walls
+        guard !walls.isEmpty else { return 0 }
+        let positions = walls.map { $0.transform.columns.3 }
+        let xs = positions.map { $0.x }
+        let zs = positions.map { $0.z }
+        guard let minX = xs.min(), let maxX = xs.max(),
+              let minZ = zs.min(), let maxZ = zs.max() else { return 0 }
+        let area = Double((maxX - minX) * (maxZ - minZ))
+        return max(0, area)
     }
 
     private func renderJSON(from room: CapturedRoom) -> String {
