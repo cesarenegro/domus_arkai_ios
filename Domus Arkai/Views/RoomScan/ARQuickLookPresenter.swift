@@ -19,7 +19,47 @@
 import SwiftUI
 import QuickLook
 
-struct ARQuickLookPresenter: UIViewControllerRepresentable {
+/// Container SwiftUI che hosta `ARQuickLookRepresentable` con un overlay
+/// "Chiudi" sopra (QLPreviewController nativo non mostra una toolbar
+/// dismiss-able quando hostato senza UINavigationController).
+struct ARQuickLookPresenter: View {
+    let localFileURL: URL
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        ZStack(alignment: .top) {
+            ARQuickLookRepresentable(localFileURL: localFileURL)
+                .ignoresSafeArea()
+
+            HStack {
+                Button {
+                    dismiss()
+                } label: {
+                    HStack(spacing: ADSpacing.s1) {
+                        Image(systemName: "xmark")
+                            .font(.system(size: 13, weight: .semibold))
+                        Text("Chiudi")
+                            .font(.system(size: 14, weight: .semibold))
+                    }
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, ADSpacing.s4)
+                    .padding(.vertical, ADSpacing.s2)
+                    .background(.regularMaterial)
+                    .clipShape(Capsule())
+                    .overlay(
+                        Capsule().stroke(.white.opacity(0.3), lineWidth: 1)
+                    )
+                }
+                .buttonStyle(.plain)
+                Spacer()
+            }
+            .padding(.horizontal, ADSpacing.s4)
+            .padding(.top, ADSpacing.s5)
+        }
+    }
+}
+
+struct ARQuickLookRepresentable: UIViewControllerRepresentable {
     let localFileURL: URL
 
     func makeCoordinator() -> Coordinator {
