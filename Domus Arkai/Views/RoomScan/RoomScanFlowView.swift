@@ -186,6 +186,7 @@ struct RoomScanFlowView: View {
                 VStack(alignment: .leading, spacing: ADSpacing.s4) {
                     headerCard(room)
                     metricsGrid(room)
+                    FloorplanFromScanView(room: room)
                     uploadStateCard
                     uploadButton(room)
                     jsonDebugCard
