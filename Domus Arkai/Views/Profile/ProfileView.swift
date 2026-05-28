@@ -25,7 +25,6 @@ struct ProfileView: View {
     @State private var showAbout: Bool = false
     @State private var showPassportEdit: Bool = false
     @State private var showMyDossiers: Bool = false
-    @State private var showRoomScanPOC: Bool = false
     @State private var showEmailSignIn: Bool = false
     @State private var agencyRole: AgencyRole? = nil
     @State private var hasFetchedRole: Bool = false
@@ -104,9 +103,6 @@ struct ProfileView: View {
             }
             .sheet(isPresented: $showMyDossiers) {
                 MyDossiersView(presentedAsSheet: true)
-            }
-            .sheet(isPresented: $showRoomScanPOC) {
-                RoomScanFlowView()
             }
             .sheet(isPresented: $showEmailSignIn) {
                 EmailPasswordSignInView()
@@ -474,11 +470,12 @@ struct ProfileView: View {
     //  2. device con sensore LiDAR (iPhone Pro / iPad Pro)
     @ViewBuilder
     private var roomScanPOCCard: some View {
-        let hasLiDAR = RoomCaptureSession.isSupported
         let hasRole = agencyRole?.canScanProperties ?? false
-        if hasLiDAR && hasRole {
-            Button {
-                showRoomScanPOC = true
+        // La voce è visibile per chiunque abbia il ruolo (anche senza LiDAR
+        // ProfessionalModeView gestisce l'unsupportedHardwareNote internamente)
+        if hasRole {
+            NavigationLink {
+                ProfessionalModeView(agencyRole: agencyRole)
             } label: {
                 HStack(spacing: ADSpacing.s3) {
                     ZStack {
@@ -491,11 +488,11 @@ struct ProfileView: View {
                     }
                     VStack(alignment: .leading, spacing: 2) {
                         HStack(spacing: ADSpacing.s2) {
-                            Text("Test scansione 3D")
+                            Text("Modalità professionale")
                                 .font(ADTypography.bodyMedium.weight(.semibold))
                                 .foregroundStyle(ADColor.primary)
                                 .lineLimit(1)
-                            Text("POC")
+                            Text("PRO")
                                 .font(.system(size: 9, weight: .bold))
                                 .tracking(1)
                                 .foregroundStyle(ADColor.background)
@@ -504,7 +501,7 @@ struct ProfileView: View {
                                 .background(ADColor.accentWarm)
                                 .clipShape(Capsule())
                         }
-                        Text("Anteprima RoomPlan · Sprint 1 v2.0")
+                        Text("Scansione 3D · Le mie scansioni · Spatial Staging")
                             .font(ADTypography.metadata)
                             .foregroundStyle(ADColor.textMuted)
                             .lineLimit(1)
