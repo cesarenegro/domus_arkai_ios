@@ -137,7 +137,7 @@ struct SpatialStagingCard: View {
         isDownloading = true
         defer { isDownloading = false }
 
-        // 1. Production path: USDZ server
+        // 1. Production path: USDZ server (se download fallisce, cade nel fallback)
         if isProductionReady, let remote = scan.stagingUSDZUrl {
             do {
                 let local = try await USDZDownloader.download(remote: remote)
@@ -145,15 +145,14 @@ struct SpatialStagingCard: View {
                 showARSheet = true
                 return
             } catch {
-                errorMessage = "Download server fallito: \(error.localizedDescription)"
-                print("🔴 [SpatialStagingCard] server download failed — \(error.localizedDescription)")
-                return
+                print("🟡 [SpatialStagingCard] server download failed (\(error.localizedDescription)) — falling back to bundled demo")
+                // NON ritorna: prosegue al fallback demo
             }
         }
 
         // 2. Fallback DEMO: USDZ bundlato locale (file demo_room.usdz nel target)
         if let demoURL = USDZDownloader.bundledDemoURL() {
-            print("🟡 [SpatialStagingCard] using bundled demo USDZ (server pipeline not ready)")
+            print("🟡 [SpatialStagingCard] using bundled demo USDZ")
             downloadedURL = demoURL
             showARSheet = true
             return
