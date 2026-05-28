@@ -37,6 +37,23 @@ actor PropertyScanService {
         return rows
     }
 
+    /// Ultima scansione (qualsiasi status) per la property. Utile durante
+    /// la fase v2.0 di sviluppo quando la pipeline server non sempre produce
+    /// `staging_usdz_url` — il client può fallback su un USDZ demo locale.
+    func latestScan(forPropertyID propertyID: UUID) async throws -> PropertyScan? {
+        print("🟢 [PropertyScan][Service] latestScan — property=\(propertyID)")
+        let rows: [PropertyScan] = try await client
+            .from(Self.table)
+            .select()
+            .eq("property_id", value: propertyID.uuidString)
+            .order("created_at", ascending: false)
+            .limit(1)
+            .execute()
+            .value
+        print("✅ [PropertyScan][Service] latestScan — found=\(rows.first != nil) status=\(rows.first?.status.rawValue ?? "nil")")
+        return rows.first
+    }
+
     /// Scansioni associate a un singolo immobile (visibili lato cliente
     /// per capire se mostrare la card "Spatial Staging").
     /// Filtrate solo status `.ready`.

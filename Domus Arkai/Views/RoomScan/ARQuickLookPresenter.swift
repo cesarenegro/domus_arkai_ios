@@ -71,6 +71,15 @@ enum USDZDownloader {
         }
     }
 
+    /// Cerca un file USDZ demo bundlato nell'app come fallback.
+    /// Per attivare: aggiungi `demo_room.usdz` al target Xcode (drag-and-drop
+    /// in Project Navigator → spunta "Copy items if needed" + target membership
+    /// "Domus Arkai"). File USDZ di esempio gratuiti su:
+    /// https://developer.apple.com/augmented-reality/quick-look/
+    static func bundledDemoURL() -> URL? {
+        Bundle.main.url(forResource: "demo_room", withExtension: "usdz")
+    }
+
     /// Scarica (o riusa cache) il file USDZ dato l'URL remoto.
     /// Nome file locale derivato dall'hash dell'URL per evitare collisioni.
     static func download(remote: URL) async throws -> URL {

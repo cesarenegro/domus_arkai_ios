@@ -53,6 +53,17 @@ struct SpatialStagingCard: View {
                 .font(.system(size: 10, weight: .semibold))
                 .tracking(2)
                 .foregroundStyle(ADColor.accentWarm)
+            if !isProductionReady {
+                Text("DEMO")
+                    .font(.system(size: 9, weight: .bold))
+                    .tracking(1)
+                    .foregroundStyle(ADColor.background)
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(ADColor.warning)
+                    .clipShape(Capsule())
+            }
+            Spacer(minLength: 0)
         }
     }
 
@@ -115,21 +126,40 @@ struct SpatialStagingCard: View {
 
     // MARK: - Action
 
+    /// True quando lo scan è in `.ready` e ha un USDZ server. False quando
+    /// dobbiamo fallback su USDZ demo bundlato.
+    private var isProductionReady: Bool {
+        scan.status == .ready && scan.stagingUSDZUrl != nil
+    }
+
     private func prepareAndPresent() async {
-        guard let remote = scan.stagingUSDZUrl else {
-            errorMessage = "USDZ non disponibile per questo immobile."
-            return
-        }
         errorMessage = nil
         isDownloading = true
         defer { isDownloading = false }
-        do {
-            let local = try await USDZDownloader.download(remote: remote)
-            downloadedURL = local
-            showARSheet = true
-        } catch {
-            errorMessage = error.localizedDescription
-            print("🔴 [SpatialStagingCard] download failed — \(error.localizedDescription)")
+
+        // 1. Production path: USDZ server
+        if isProductionReady, let remote = scan.stagingUSDZUrl {
+            do {
+                let local = try await USDZDownloader.download(remote: remote)
+                downloadedURL = local
+                showARSheet = true
+                return
+            } catch {
+                errorMessage = "Download server fallito: \(error.localizedDescription)"
+                print("🔴 [SpatialStagingCard] server download failed — \(error.localizedDescription)")
+                return
+            }
         }
+
+        // 2. Fallback DEMO: USDZ bundlato locale (file demo_room.usdz nel target)
+        if let demoURL = USDZDownloader.bundledDemoURL() {
+            print("🟡 [SpatialStagingCard] using bundled demo USDZ (server pipeline not ready)")
+            downloadedURL = demoURL
+            showARSheet = true
+            return
+        }
+
+        // 3. Né server pronto né demo bundlato → istruzioni esplicite
+        errorMessage = "USDZ non disponibile. La pipeline server non ha ancora generato il modello. Per testare l'anteprima AR aggiungi un file `demo_room.usdz` al target Xcode."
     }
 }
