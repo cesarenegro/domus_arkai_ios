@@ -94,4 +94,65 @@ actor PropertyService {
             return properties
         }
     }
+
+    // MARK: - User-generated properties (v2.0 Spatial Staging)
+
+    /// Conta le property user-generated dall'utente corrente (max 1 lato app).
+    /// Vedi HUB msg e91b208a (Marco, 2026-05-28) — vincolo Cesare.
+    func countMyUserGeneratedProperties(userID: UUID) async throws -> Int {
+        struct IDRow: Decodable { let id: UUID }
+        let rows: [IDRow] = try await client
+            .from("properties")
+            .select("id")
+            .eq("created_by", value: userID.uuidString)
+            .eq("is_user_generated", value: true)
+            .execute()
+            .value
+        return rows.count
+    }
+
+    /// Crea un nuovo immobile "user-generated" da scansione RoomPlan.
+    /// RLS: l'utente deve essere agency_admin/agent/super_admin e fornire
+    ///      agency_id valido + created_by = auth.uid() + is_user_generated = true.
+    @discardableResult
+    func createUserGeneratedProperty(draft: UserGeneratedPropertyDraft) async throws -> Property {
+        print("🟢 [Property][Service] createUserGenerated — title=\(draft.title), city=\(draft.city ?? "nil")")
+        let rows: [Property] = try await client
+            .from("properties")
+            .insert(draft)
+            .select()
+            .execute()
+            .value
+        guard let created = rows.first else {
+            throw NSError(
+                domain: "PropertyService",
+                code: -1,
+                userInfo: [NSLocalizedDescriptionKey: "Creazione immobile non riuscita."]
+            )
+        }
+        print("✅ [Property][Service] createUserGenerated ok — id=\(created.id)")
+        return created
+    }
+}
+
+// MARK: - Draft per user-generated property
+
+/// Payload minimo per INSERT su `properties` da iOS scan flow.
+/// Conforme alla RLS Marco (HUB msg e91b208a, 2026-05-28).
+struct UserGeneratedPropertyDraft: Encodable, Sendable {
+    let title: String
+    let city: String?
+    let agencyID: UUID?     // null se super_admin senza agenzia
+    let createdBy: UUID     // auth.uid()
+    let isUserGenerated: Bool = true
+    let publishedStatus: String = "draft"  // non visibile pubblicamente finché agenzia non lo pubblica
+
+    enum CodingKeys: String, CodingKey {
+        case title
+        case city
+        case agencyID = "agency_id"
+        case createdBy = "created_by"
+        case isUserGenerated = "is_user_generated"
+        case publishedStatus = "published_status"
+    }
 }

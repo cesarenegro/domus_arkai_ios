@@ -62,4 +62,26 @@ actor AgencyAccessService {
             return nil
         }
     }
+
+    /// Recupera l'agency_id dell'utente loggato via RPC server-side
+    /// `public.get_current_user_agency_id()`. Per super_admin senza agenzia
+    /// ritorna `nil`.
+    func fetchMyAgencyID() async -> UUID? {
+        print("🟢 [AgencyAccess][Service] fetch agency_id")
+        do {
+            let agencyIDString: String? = try await client
+                .rpc("get_current_user_agency_id")
+                .execute()
+                .value
+            guard let raw = agencyIDString, let uuid = UUID(uuidString: raw) else {
+                print("🟡 [AgencyAccess][Service] no agency_id (super_admin or unauth)")
+                return nil
+            }
+            print("✅ [AgencyAccess][Service] agency_id=\(uuid)")
+            return uuid
+        } catch {
+            print("🔴 [AgencyAccess][Service] agency_id RPC failed — \(error.localizedDescription)")
+            return nil
+        }
+    }
 }

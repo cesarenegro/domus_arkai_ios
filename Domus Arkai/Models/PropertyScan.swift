@@ -45,6 +45,10 @@ struct PropertyScan: Identifiable, Codable, Hashable, Sendable {
     /// (CapturedRoom serializzato). Sul DB Supabase decoda comunque a jsonb.
     let scanJSON: AnyCodable?
 
+    /// Nome descrittivo scelto dall'utente (colonna dedicata `label`,
+    /// aggiunta da Marco 2026-05-28 ref msg e91b208a).
+    let label: String?
+
     let totalAreaM2: Double?
     let roomCount: Int?
 
@@ -62,6 +66,7 @@ struct PropertyScan: Identifiable, Codable, Hashable, Sendable {
         case propertyID = "property_id"
         case scannedBy = "scanned_by"
         case scanJSON = "scan_json"
+        case label
         case totalAreaM2 = "total_area_m2"
         case roomCount = "room_count"
         case status
@@ -75,12 +80,15 @@ struct PropertyScan: Identifiable, Codable, Hashable, Sendable {
 //
 // Lato server: status default = 'pending' (CHECK constraint).
 // `created_at` settato dal DEFAULT now() del DDL.
+// `scanned_by` OBBLIGATORIO: RLS valida `auth.uid() = scanned_by`.
 
 struct PropertyScanDraft: Encodable, Sendable {
     let propertyID: UUID
     let scannedBy: UUID
     /// Blob serializzato del CapturedRoom Apple, va su `scan_json` jsonb.
     let scanJSON: AnyCodable
+    /// Nome scansione (colonna dedicata `label`).
+    let label: String
     let totalAreaM2: Double
     let roomCount: Int
 
@@ -88,6 +96,7 @@ struct PropertyScanDraft: Encodable, Sendable {
         case propertyID = "property_id"
         case scannedBy = "scanned_by"
         case scanJSON = "scan_json"
+        case label
         case totalAreaM2 = "total_area_m2"
         case roomCount = "room_count"
     }

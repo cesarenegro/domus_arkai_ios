@@ -37,6 +37,24 @@ struct RoomScanFlowView: View {
     @State private var uploadError: String?
     @State private var pollTask: Task<Void, Never>? = nil
 
+    // MARK: - New property creation state (v2.0 — Cesare requirement, msg e91b208a)
+    @State private var targetMode: TargetMode = .existing
+    @State private var newPropertyCity: String = ""
+    @State private var userGeneratedCount: Int? = nil // nil = non ancora caricato
+    @State private var newPropertyError: String?
+
+    enum TargetMode: String, CaseIterable {
+        case existing  // associa a property esistente (picker)
+        case new       // crea nuovo immobile user-generated (max 1 per user)
+
+        var label: String {
+            switch self {
+            case .existing: "Immobile esistente"
+            case .new: "Nuovo immobile"
+            }
+        }
+    }
+
     enum UploadPhase: Equatable {
         case idle
         case uploading
@@ -260,6 +278,9 @@ struct RoomScanFlowView: View {
                             .font(ADTypography.sectionTitle)
                             .foregroundStyle(ADColor.primary)
 
+                        // Toggle Esistente / Nuovo
+                        targetModeToggle
+
                         // Nome scansione
                         VStack(alignment: .leading, spacing: ADSpacing.s2) {
                             Text("NOME SCANSIONE")
@@ -278,13 +299,15 @@ struct RoomScanFlowView: View {
                                 .clipShape(RoundedRectangle(cornerRadius: 12))
                         }
 
-                        // Property picker
-                        VStack(alignment: .leading, spacing: ADSpacing.s2) {
-                            Text("IMMOBILE")
-                                .font(.system(size: 10, weight: .semibold))
-                                .tracking(2)
-                                .foregroundStyle(ADColor.textMuted)
-                            propertyPickerContent
+                        // Sezione condizionale: picker o form nuovo
+                        if targetMode == .existing {
+                            existingPropertySection
+                        } else {
+                            newPropertySection
+                        }
+
+                        if let newPropertyError {
+                            errorBanner(newPropertyError)
                         }
 
                         Button {
@@ -319,7 +342,119 @@ struct RoomScanFlowView: View {
                 if availableProperties.isEmpty && !loadingProperties {
                     await loadProperties()
                 }
+                if userGeneratedCount == nil {
+                    await loadUserGeneratedCount()
+                }
             }
+        }
+    }
+
+    private var targetModeToggle: some View {
+        HStack(spacing: 0) {
+            ForEach(TargetMode.allCases, id: \.self) { mode in
+                Button {
+                    withAnimation(.easeInOut(duration: 0.2)) { targetMode = mode }
+                } label: {
+                    Text(mode.label)
+                        .font(ADTypography.smallMedium.weight(.semibold))
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 40)
+                        .foregroundStyle(targetMode == mode ? ADColor.background : ADColor.primary)
+                        .background(targetMode == mode ? ADColor.primary : Color.clear)
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(3)
+        .background(ADColor.surfaceSoft)
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+
+    private var existingPropertySection: some View {
+        VStack(alignment: .leading, spacing: ADSpacing.s2) {
+            Text("IMMOBILE")
+                .font(.system(size: 10, weight: .semibold))
+                .tracking(2)
+                .foregroundStyle(ADColor.textMuted)
+            propertyPickerContent
+        }
+    }
+
+    @ViewBuilder
+    private var newPropertySection: some View {
+        VStack(alignment: .leading, spacing: ADSpacing.s3) {
+            VStack(alignment: .leading, spacing: ADSpacing.s2) {
+                Text("CITTÀ")
+                    .font(.system(size: 10, weight: .semibold))
+                    .tracking(2)
+                    .foregroundStyle(ADColor.textMuted)
+                TextField("Es. Milano", text: $newPropertyCity)
+                    .font(ADTypography.body)
+                    .textInputAutocapitalization(.words)
+                    .padding(.horizontal, ADSpacing.s4)
+                    .frame(height: 48)
+                    .background(ADColor.surface)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(ADColor.border, lineWidth: 1)
+                    )
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+            }
+
+            if let count = userGeneratedCount, count >= 1 {
+                HStack(alignment: .top, spacing: ADSpacing.s2) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .foregroundStyle(ADColor.warning)
+                    Text("Hai già 1 immobile creato da scansione. Per crearne un altro, contatta l'amministratore dell'agenzia.")
+                        .font(ADTypography.small)
+                        .foregroundStyle(ADColor.warning)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Spacer(minLength: 0)
+                }
+                .padding(ADSpacing.s3)
+                .background(ADColor.warning.opacity(0.12))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(ADColor.warning.opacity(0.3), lineWidth: 1)
+                )
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+            } else {
+                Text("Il nome scansione diventa il titolo del nuovo immobile. Sarà salvato come bozza (`draft`) finché l'amministratore dell'agenzia non lo pubblica.")
+                    .font(ADTypography.metadata)
+                    .foregroundStyle(ADColor.textMuted)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+    }
+
+    private func errorBanner(_ message: String) -> some View {
+        HStack(alignment: .top, spacing: ADSpacing.s2) {
+            Image(systemName: "exclamationmark.circle.fill")
+                .foregroundStyle(ADColor.warning)
+            Text(message)
+                .font(ADTypography.small)
+                .foregroundStyle(ADColor.warning)
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 0)
+        }
+        .padding(ADSpacing.s3)
+        .background(ADColor.warning.opacity(0.12))
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .stroke(ADColor.warning.opacity(0.3), lineWidth: 1)
+        )
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+
+    private func loadUserGeneratedCount() async {
+        guard let uid = AuthService.shared.currentUser?.id else { return }
+        do {
+            userGeneratedCount = try await PropertyService.shared.countMyUserGeneratedProperties(userID: uid)
+            print("✅ [RoomScan][Flow] user-generated count = \(userGeneratedCount ?? 0)")
+        } catch {
+            print("🟡 [RoomScan][Flow] countMyUserGenerated failed — \(error.localizedDescription)")
+            userGeneratedCount = 0 // assume safe
         }
     }
 
@@ -410,20 +545,18 @@ struct RoomScanFlowView: View {
     }
 
     private var canSubmit: Bool {
-        selectedProperty != nil && !scanLabel.trimmingCharacters(in: .whitespaces).isEmpty
-    }
-
-    /// Wrapper interno per il blob scan_json: include label custom + CapturedRoom.
-    /// Marco lato server può estrarre il label con `scan_json->>'label'`.
-    /// In v2.1 col DDL aggiornato avremo una colonna dedicata `label`.
-    private struct ScanUploadPayload: Encodable {
-        let label: String
-        let capturedRoom: CapturedRoom
+        guard !scanLabel.trimmingCharacters(in: .whitespaces).isEmpty else { return false }
+        switch targetMode {
+        case .existing:
+            return selectedProperty != nil
+        case .new:
+            let quotaOK = (userGeneratedCount ?? 0) < 1
+            return quotaOK && !newPropertyCity.trimmingCharacters(in: .whitespaces).isEmpty
+        }
     }
 
     private func startUpload() {
         guard let room = capturedRoom else { return }
-        guard let property = selectedProperty else { return }
         guard let userID = AuthService.shared.currentUser?.id else {
             uploadPhase = .errored("Non sei autenticato.")
             return
@@ -434,15 +567,40 @@ struct RoomScanFlowView: View {
         uploadPhase = .uploading
         Task {
             do {
-                // Wrap: { label, capturedRoom } → AnyCodable → scan_json jsonb
-                let payload = ScanUploadPayload(label: trimmedLabel, capturedRoom: room)
-                let blob = try AnyCodable(payload)
+                // 1. Risolvi propertyID: esistente o crea nuovo
+                let propertyID: UUID
+                switch targetMode {
+                case .existing:
+                    guard let property = selectedProperty else {
+                        uploadPhase = .errored("Nessun immobile selezionato.")
+                        return
+                    }
+                    propertyID = property.id
+
+                case .new:
+                    // Recupera agency_id dell'utente (null per super_admin)
+                    let agencyID = await AgencyAccessService.shared.fetchMyAgencyID()
+                    let trimmedCity = newPropertyCity.trimmingCharacters(in: .whitespacesAndNewlines)
+                    let draftProperty = UserGeneratedPropertyDraft(
+                        title: trimmedLabel,
+                        city: trimmedCity.isEmpty ? nil : trimmedCity,
+                        agencyID: agencyID,
+                        createdBy: userID
+                    )
+                    let createdProperty = try await PropertyService.shared.createUserGeneratedProperty(draft: draftProperty)
+                    propertyID = createdProperty.id
+                    print("✅ [RoomScan][Flow] new property created → id=\(propertyID)")
+                }
+
+                // 2. Encode CapturedRoom blob + crea PropertyScanDraft
+                let blob = try AnyCodable(room)
                 let area = computeArea(from: room)
                 let count = max(1, room.sections.count)
                 let draft = PropertyScanDraft(
-                    propertyID: property.id,
+                    propertyID: propertyID,
                     scannedBy: userID,
                     scanJSON: blob,
+                    label: trimmedLabel,
                     totalAreaM2: area,
                     roomCount: count
                 )
